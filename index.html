@@ -259,9 +259,9 @@
 
                     <div class="detail-section">
                         <div class="detail-title">attack quickhacks</div>
-                        <div class="detail-item">short circuit: 3% damage, +20% costs, 15 min, 1 slot</div>
+                        <div class="detail-item">short circuit: 3% damage, +15% costs, 15 min, 1 slot</div>
                         <div class="detail-item">overheat: 2.5% damage, -20% def, 15 min, 1 slot</div>
-                        <div class="detail-item">lag: 0.3% damage</div>
+                        <div class="detail-item">lag: 0.5% damage</div>
                         <div class="detail-item">troll: 1% × attacker defense bonus, base costs = damages</div>
                     </div>
 
@@ -2012,23 +2012,23 @@
         const QUICKHACK_PARAMS = {
             1: { // SHORT CIRCUIT
                 baseDamage: 300,        // 3%
-                costDamageRatio: 5000,  // 50%
-                effectMagnitude: 2000,  // +20% attack costs
+                costDamageRatio: 3500,  // 35%
+                effectMagnitude: 1500,  // +15% attack costs
                 durationBlocks: 450,
                 effectType: 3, // ATTACK_COST_MOD
                 selfCastOnly: false
             },
             2: { // OVERHEAT
                 baseDamage: 250,        // 2.5%
-                costDamageRatio: 6000,  // 60%
-                effectMagnitude: 2500,  // -25% defense
+                costDamageRatio: 4000,  // 40%
+                effectMagnitude: 2000,  // -20% defense
                 durationBlocks: 450,
                 effectType: 2, // DEFENSE_MOD
                 selfCastOnly: false
             },
             3: { // LAG
-                baseDamage: 30,         // 0.3%
-                costDamageRatio: 3333,  // ~33%
+                baseDamage: 50,         // 0.5%
+                costDamageRatio: 2500,  // 25%
                 effectMagnitude: 0,
                 durationBlocks: 0,
                 effectType: 5, // SPECIAL
@@ -2036,7 +2036,7 @@
             },
             4: { // TROLL
                 baseDamage: 100,        // 1%
-                costDamageRatio: 10000, // 100%
+                costDamageRatio: 9000,  // 90%
                 effectMagnitude: 0,
                 durationBlocks: 0,
                 effectType: 5, // SPECIAL
