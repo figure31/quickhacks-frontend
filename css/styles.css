@@ -1,0 +1,768 @@
+/**
+ * QuickHacks Game Frontend Styles
+ * Cyberpunk-themed UI with monospace typography and dark color scheme
+ */
+
+@font-face {
+    font-family: 'ProtoMono';
+    src: url('../ProtoMono-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    background-color: #1f1e28;
+    color: #ceccde;
+    font-size: 10px;
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+.header {
+    background-color: #1f1e28;
+    border-bottom: 1px solid #ceccde;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.header-item {
+    margin: 5px 10px;
+}
+
+.header-label {
+    color: #ceccde;
+}
+
+.header-value {
+    color: #ceccde;
+    font-weight: bold;
+}
+
+.header-value.boss-balance {
+    color: #875fff;
+}
+
+.container {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+.left-section {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ceccde;
+}
+
+.game-map-section {
+    height: 42vh;
+    min-height: 42vh;
+    max-height: 42vh;
+    border-bottom: 1px solid #ceccde;
+    background-color: #1f1e28;
+    display: flex;
+    flex-direction: column;
+}
+
+.data-panels {
+    display: flex;
+    height: calc(58vh - 60px);
+    min-height: calc(58vh - 60px);
+}
+
+.left-panel {
+    width: 50%;
+    border-right: 1px solid #ceccde;
+    background-color: #1f1e28;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.player-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.middle-panel {
+    width: 50%;
+    background-color: #1f1e28;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#gameMapContainer {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+.third-panel {
+    width: 25%;
+    border-right: 1px solid #ceccde;
+    display: flex;
+    flex-direction: column;
+    background-color: #1f1e28;
+}
+
+.right-panel {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    background-color: #1f1e28;
+}
+
+.panel-header {
+    background-color: #1f1e28;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ceccde;
+    font-weight: bold;
+    color: #ceccde;
+    height: 40px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+.panel-header-with-button {
+    background-color: #1f1e28;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ceccde;
+    font-weight: bold;
+    color: #ceccde;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+.disconnect-btn {
+    background-color: #ceccde;
+    color: #1f1e28;
+    border: 1px solid #ceccde;
+    padding: 1px 4px;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 9px;
+    cursor: pointer;
+    line-height: 1;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.disconnect-btn:hover {
+    background-color: #1f1e28;
+    color: #ceccde;
+}
+
+.pfp-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pfp-btn {
+    background-color: #ceccde;
+    color: #1f1e28;
+    border: 1px solid #ceccde;
+    padding: 0px 4px;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 9px;
+    cursor: pointer;
+    line-height: 1;
+    min-width: 16px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pfp-btn:hover {
+    background-color: #1f1e28;
+    color: #ceccde;
+}
+
+.seed-display {
+    color: #875fff;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 9px;
+    margin-right: 5px;
+}
+
+/* Transaction controls */
+.transaction-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.transaction-btn {
+    background-color: #ceccde;
+    color: #1f1e28;
+    border: 1px solid #ceccde;
+    padding: 2px 6px;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.transaction-btn:hover {
+    background-color: #1f1e28;
+    color: #ceccde;
+}
+
+.transaction-input {
+    background-color: #1f1e28;
+    border: 1px solid #ceccde;
+    color: #ceccde;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    width: 60px;
+}
+
+.transaction-input.ram-input {
+    width: 90px;
+}
+
+.transaction-label {
+    color: #ceccde;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+}
+
+/* Disconnected state */
+.profile-disconnected {
+    display: none;
+}
+
+.profile-disconnected.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #ceccde;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+}
+
+.player-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.player-item {
+    border-bottom: 1px solid #ceccde;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.player-item:hover {
+    background-color: #333333;
+}
+
+.player-header {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-address {
+    color: #ceccde;
+}
+
+.player-balance {
+    color: #875fff;
+}
+
+.player-details {
+    display: none;
+    background-color: #1f1e28;
+    padding: 15px;
+    border-top: 1px solid #ceccde;
+}
+
+.player-details.expanded {
+    display: block;
+}
+
+.detail-section {
+    margin-bottom: 15px;
+}
+
+.detail-title {
+    color: #ceccde;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.detail-item {
+    margin: 3px 0;
+    color: #ceccde;
+}
+
+.effect-item {
+    color: #ceccde;
+    margin: 2px 0;
+}
+
+.activity-item {
+    color: #ceccde;
+    margin: 2px 0;
+}
+
+.activity-feed {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    width: 100%;
+}
+
+#activityFeed {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.feed-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ceccde;
+    font-size: 10px;
+    color: #ceccde;
+}
+
+.profile-section {
+    height: calc(56vh - 60px);
+    overflow-y: auto;
+}
+
+.attack-simulator {
+    height: calc(60vh - 60px);
+    overflow-y: auto;
+}
+
+.profile-content {
+    padding: 15px;
+}
+
+.simulator-content {
+    padding: 15px;
+}
+
+.blob-animation {
+    height: 48vh;
+    border-bottom: 1px solid #ceccde;
+    overflow: hidden;
+}
+
+.blob-content {
+    height: calc(100% - 41px);
+    position: relative;
+    box-sizing: border-box;
+    min-height: 320px;
+}
+
+#pfpContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#pfpContainer canvas {
+    display: block;
+}
+
+/* Loading animations */
+.section-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+}
+
+.loading-text {
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    color: #ceccde;
+    margin-bottom: 10px;
+}
+
+.loading-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading-bar-section {
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    color: #ceccde;
+    white-space: nowrap;
+}
+
+.section-content {
+    display: none;
+}
+
+.section-content.loaded {
+    display: block;
+}
+
+#mapSection {
+    flex: 1;
+    display: none;
+}
+
+#mapSection.loaded {
+    display: flex;
+    flex-direction: column;
+}
+
+.blob {
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    line-height: 1;
+    white-space: pre;
+}
+
+.rules-section {
+    height: calc(56vh - 60px);
+    overflow-y: auto;
+    border-top: 1px solid #ceccde;
+}
+
+.rules-content {
+    padding: 15px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.execute-btn, .refresh-btn {
+    background-color: #ceccde;
+    color: #1f1e28;
+    border: 1px solid #ceccde;
+    padding: 5px 10px;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.refresh-btn {
+    background-color: #1f1e28;
+    color: #ceccde;
+    border: 1px solid #ceccde;
+}
+
+.execute-btn:hover, .refresh-btn:hover {
+    background-color: #1f1e28;
+    color: #ceccde;
+}
+
+.refresh-btn:hover {
+    background-color: #ceccde;
+    color: #1f1e28;
+}
+
+.result-section {
+    background-color: #1f1e28;
+    border: 1px solid #ceccde;
+    padding: 10px;
+    margin-top: 10px;
+    display: none;
+}
+
+.result-section.show {
+    display: block;
+}
+
+/* Activity Feed Styling */
+.feed-item.attack {
+    color: #d42d17;
+}
+
+.feed-item.self-cast {
+    color: #875fff;
+}
+
+.feed-item.deposit {
+    color: #ceccde;
+}
+
+.feed-item.withdraw {
+    color: #ceccde;
+}
+
+.feed-item.boss {
+    color: #ff9ff3;
+    font-weight: bold;
+}
+
+/* Player Status Styling - Removed colored borders */
+
+/* Effect Styling */
+.effect-item.positive {
+    color: #875fff;
+}
+
+.effect-item.negative {
+    color: #d42d17;
+}
+
+.effect-item.protection {
+    color: #875fff;
+}
+
+/* Activity Item Styling based on symbols */
+.activity-item {
+    color: #ceccde;
+}
+
+.activity-item.attack {
+    color: #d42d17;
+}
+
+.activity-item.self-cast {
+    color: #875fff;
+}
+
+.activity-item.deposit {
+    color: #ceccde;
+}
+
+.activity-item.withdrawal {
+    color: #ceccde;
+}
+
+/* Game Status Styling - removed active color override */
+
+.header-value.boss-mode {
+    color: #ff9ff3;
+}
+
+.header-value.warning {
+    color: #f9ca24;
+}
+
+.header-value.danger {
+    color: #ff6b6b;
+}
+
+/* Balance Styling - All RAM balances use special purple color */
+
+/* Attack Simulator Result Styling */
+.result-success {
+    color: #4ecdc4;
+}
+
+.result-failure {
+    color: #ff6b6b;
+}
+
+.result-partial {
+    color: #f9ca24;
+}
+
+/* Attack Simulator Styling */
+.target-input {
+    background-color: #1f1e28;
+    border: 1px solid #ceccde;
+    color: #ceccde;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    padding: 5px 10px;
+    width: auto;
+    min-width: 320px;
+}
+
+.quickhack-type-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 5px 0;
+}
+
+.type-btn {
+    background-color: #1f1e28;
+    border: 1px solid #ceccde;
+    color: #ceccde;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.type-btn:hover {
+    background-color: #333333;
+}
+
+.type-btn.selected {
+    background-color: #ceccde;
+    color: #1f1e28;
+}
+
+.type-btn.attack.selected {
+    background-color: #d42d17;
+    color: #ceccde;
+    border-color: #d42d17;
+}
+
+.type-btn.self-cast.selected {
+    background-color: #875fff;
+    color: #ceccde;
+    border-color: #875fff;
+}
+
+.quickhack-options {
+    display: none;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+}
+
+.quickhack-options.show {
+    display: flex;
+}
+
+.quickhack-btn {
+    background-color: #1f1e28;
+    border: 1px solid #ceccde;
+    color: #ceccde;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quickhack-btn:hover {
+    background-color: #333333;
+}
+
+.quickhack-btn.selected {
+    background-color: #ceccde;
+    color: #1f1e28;
+}
+
+.target-balance {
+    color: #875fff;
+}
+
+.ram-value {
+    color: #875fff;
+}
+
+.loading-container {
+    display: none;
+    margin-top: 10px;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading-container.show {
+    display: flex;
+}
+
+.loading-bar {
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    color: #ceccde;
+    white-space: nowrap;
+}
+
+.tx-link {
+    color: #ceccde;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 10px;
+}
+
+.tx-link:hover {
+    opacity: 0.7;
+}
+
+.player-header-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ceccde;
+    font-weight: bold;
+    color: #ceccde;
+}
+
+.quickhack-attack {
+    color: #d42d17;
+}
+
+.quickhack-self-cast {
+    color: #875fff;
+}
+
+/* Clickable addresses in activity feed */
+.clickable-address {
+    cursor: pointer;
+    text-decoration: underline;
+    transition: opacity 0.2s;
+}
+
+.clickable-address:hover {
+    opacity: 0.7;
+}
+
+/* Animation Classes */
+.flash-attack {
+    animation: flash-red 0.5s;
+}
+
+.flash-deposit {
+    animation: flash-blue 0.5s;
+}
+
+.flash-self-cast {
+    animation: flash-teal 0.5s;
+}
+
+@keyframes flash-red {
+    0%, 100% { background-color: #1f1e28; }
+    50% { background-color: #ff6b6b33; }
+}
+
+@keyframes flash-blue {
+    0%, 100% { background-color: #1f1e28; }
+    50% { background-color: #45b7d133; }
+}
+
+@keyframes flash-teal {
+    0%, 100% { background-color: #1f1e28; }
+    50% { background-color: #4ecdc433; }
+}
