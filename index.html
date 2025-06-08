@@ -253,59 +253,63 @@
                 <div class="panel-header">GAME RULES</div>
                 <div class="rules-content">
                     <div class="detail-section">
+                        <div class="detail-title">Quickhacks</div>
+                        <div class="detail-item">Accelerationist/cyberpunk blockchain PVP extraction hacker game. Players build stats and steal tokens from each other using quickhacks by depositing ETH to receive RAM tokens. All RAM costs are sent to a boss address for recirculation. $RG holders can claim an attack/defense bonus.</div>
+                    </div>
+
+                    <div class="detail-section">
                         <div class="detail-title">attack quickhacks</div>
-                        <div class="detail-item">short circuit: 3% damage, +20% costs (15 min), 1 slot</div>
-                        <div class="detail-item">overheat: 2.5% damage, -20% defense (15 min), 1 slot</div>
-                        <div class="detail-item">lag: 0.3% damage, instant, 0 slots</div>
-                        <div class="detail-item">troll: 1% × defense bonus, instant, 0 slots</div>
+                        <div class="detail-item">short circuit: 3% damage, +20% costs, 15 min, 1 slot</div>
+                        <div class="detail-item">overheat: 2.5% damage, -20% def, 15 min, 1 slot</div>
+                        <div class="detail-item">lag: 0.3% damage</div>
+                        <div class="detail-item">troll: 1% × attacker defense bonus, base costs = damages</div>
                     </div>
 
                     <div class="detail-section">
                         <div class="detail-title">self-cast quickhacks</div>
-                        <div class="detail-item">berserk: +100% damage, overheat immunity (20 min), 2 slots</div>
-                        <div class="detail-item">oilbath: -30% costs, -20% defense (30 min), 2 slots</div>
-                        <div class="detail-item">on/off: blocks incoming/outgoing quickhacks, resets slots (10 min), 2 slots</div>
-                        <div class="detail-item">downstream: +50% def, +25% atk/cost (20 min), 3 slots</div>
-                        <div class="detail-item">icewall: +100% defense, lag immunity (20 min), 2 slots</div>
+                        <div class="detail-item">berserk: +100% damage, overheat immunity, 20 min, 2 slots</div>
+                        <div class="detail-item">oilbath: -30% costs, -20% defense, 30 min, 2 slots</div>
+                        <div class="detail-item">on/off: blocks incoming/outgoing quickhacks, clears effects, 10 min, 2 slots</div>
+                        <div class="detail-item">downstream: +50% defense, +25% attack/cost, 20 min, 3 slots</div>
+                        <div class="detail-item">icewall: +100% defense, lag immunity, 20 min, 2 slots</div>
                     </div>
 
                     <div class="detail-section">
-                        <div class="detail-title">balance requirements</div>
-                        <div class="detail-item">victim balance needs to be min. 10% of attacker</div>
-                        <div class="detail-item">example: 1000 RAM can only fight 100-10,000 RAM</div>
-                        <div class="detail-item">prevents dust attacks and whale griefing</div>
+                        <div class="detail-title">protections & limits</div>
+                        <div class="detail-item">effect slots: max 9 active per player, same effect stacks</div>
+                        <div class="detail-item">withdrawal cooldown: 30 minutes after deposit</div>
+                        <div class="detail-item">balance attack requirements: 10% (big cannot attack small and small cannot spam big)</div>
+                        <div class="detail-item">rate limit: 1 quickhack per block per player</div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-title">player progression</div>
+                        <div class="detail-item">attack bonus: +1 point (0.01%) per 10k damage dealt</div>
+                        <div class="detail-item">defense bonus: +1 point (0.01%) per 5k damage taken</div>
+                        <div class="detail-item">cost scaling: attack bonus/2</div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-title">gamenomics</div>
+                        <div class="detail-item">exchange rate: 10,000,000 RAM per ETH</div>
+                        <div class="detail-item">all attack costs sent to boss address</div>
+                        <div class="detail-item">0.5% deposit/withdrawal tax, 1% attack rewards tax</div>
                     </div>
 
                     <div class="detail-section">
                         <div class="detail-title">game modes</div>
                         <div class="detail-item">normal: standard gameplay</div>
-                        <div class="detail-item">underload: 30% reduction in damage and costs</div>
-                        <div class="detail-item">full moon: 50% increase in damage and costs</div>
-                        <div class="detail-item">outage: all attacks disabled, withdrawals only</div>
+                        <div class="detail-item">underload: -30% damage/costs</div>
+                        <div class="detail-item">full moon: +50% damage/costs</div>
+                        <div class="detail-item">outage: quickhacks disabled, withdrawals only</div>
                     </div>
 
                     <div class="detail-section">
-                        <div class="detail-title">special player states</div>
-                        <div class="detail-item">faraday: complete attack immunity</div>
-                        <div class="detail-item">boss: immune to effects, direct damage only</div>
-                        <div class="detail-item">cheating death: +30% attack/defense bonuses</div>
+                        <div class="detail-title">player states</div>
+                        <div class="detail-item">faraday: attack immunity (for treasury)</div>
+                        <div class="detail-item">boss: immune to effects</div>
+                        <div class="detail-item">cheating death: +30% (+3000 pts) attack/defense</div>
                         <div class="detail-item">ban: cannot execute attacks</div>
-                    </div>
-
-                    <div class="detail-section">
-                        <div class="detail-title">progression & economics</div>
-                        <div class="detail-item">attack bonus: +1 point per 10k damage dealt</div>
-                        <div class="detail-item">defense bonus: +1 point per 5k damage taken</div>
-                        <div class="detail-item">rising costs: attack costs increase with progression</div>
-                        <div class="detail-item">taxes: 0.5% deposit/withdraw, 1% attack rewards</div>
-                        <div class="detail-item">exchange rate: 10,000,000 RAM per ETH</div>
-                        <div class="detail-item">withdrawal cooldown: 30 minutes after deposit</div>
-                    </div>
-
-                    <div class="detail-section">
-                        <div class="detail-title">system limits</div>
-                        <div class="detail-item">effect slots: max 9 active per player</div>
-                        <div class="detail-item">rate limit: 1 quickhack per block per player</div>
                     </div>
 
                     <div class="detail-section">
@@ -313,11 +317,16 @@
                         <div class="detail-item">0x05351d48D04E16b05e388394e6AbB25054D0Ad5a</div>
                     </div>
 
-                    <div class="detail-section">
+                    <div class="detail-section"> 
                         <div class="detail-title">contracts</div>
                         <div class="detail-item">QuickHacksGame: <a href="https://sepolia.basescan.org/address/0x7886E51360A71FCd9e29ef0c41b2a85152284663" target="_blank" style="color: #ceccde; text-decoration: underline;">0x7886...4663</a></div>
                         <div class="detail-item">PlayerManager: <a href="https://sepolia.basescan.org/address/0xD5cFD72426ffE8da3b0E5D184baa3F850510e183" target="_blank" style="color: #ceccde; text-decoration: underline;">0xD5cF...e183</a></div>
                         <div class="detail-item">QuickhackSystem: <a href="https://sepolia.basescan.org/address/0x57d67cB66A76c7Af054F7e99b189EF2E64579ECc" target="_blank" style="color: #ceccde; text-decoration: underline;">0x57d6...9ECc</a></div>
+                        <div class="detail-item">$RG on ETH: <a href="https://etherscan.io/address/0x2C91D908E9fab2dD2441532a04182d791e590f2d" target="_blank" style="color: #ceccde; text-decoration: underline;">0x2C91...0f2d</a></div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-title">Created by Figure31 and dreamed up by the Reaper Agent </div>
                     </div>
                 </div>
             </div>
@@ -1191,6 +1200,12 @@
             // Reset PFP seed display
             document.getElementById('seedDisplay').textContent = 'no player connected';
             
+            // Clean up PFP instance
+            if (window.pfpSketch && typeof window.pfpSketch.remove === 'function') {
+                window.pfpSketch.remove();
+            }
+            window.pfpSketch = null;
+            
             isPlayerConnected = false;
             connectedWalletAddress = null;
             
@@ -1232,8 +1247,7 @@
                 // Call deposit function
                 const tx = await contract.methods.deposit().send({
                     from: connectedWalletAddress,
-                    value: weiAmount,
-                    gas: 200000
+                    value: weiAmount
                 });
                 
                 // Show transaction success message with link
@@ -1272,8 +1286,7 @@
                 
                 // Call withdraw function
                 const tx = await contract.methods.withdraw(ramAmount.toString()).send({
-                    from: connectedWalletAddress,
-                    gas: 300000
+                    from: connectedWalletAddress
                 });
                 
                 // Show transaction success message with link
@@ -1287,6 +1300,56 @@
             } catch (error) {
                 console.error('Withdrawal failed:', error);
                 alert(`Withdrawal failed: ${error.message || 'Unknown error'}`);
+            }
+        }
+        
+        // Helper function to get revert reason from a failed transaction
+        async function getRevertReason(txHash) {
+            try {
+                const web3 = new Web3(window.ethereum);
+                
+                // Get the transaction
+                const tx = await web3.eth.getTransaction(txHash);
+                if (!tx) return null;
+                
+                // Try to call the transaction to get the revert reason
+                try {
+                    await web3.eth.call(tx, tx.blockNumber);
+                    return null; // If call succeeds, no revert reason
+                } catch (callError) {
+                    // Extract revert reason from call error
+                    let reason = callError.message;
+                    
+                    // Try to extract the actual revert string
+                    if (reason.includes('revert')) {
+                        const revertMatch = reason.match(/revert (.+?)"/);
+                        if (revertMatch) {
+                            return revertMatch[1];
+                        }
+                    }
+                    
+                    // Try to decode hex data
+                    if (callError.data) {
+                        try {
+                            // Remove 0x prefix and first 8 characters (function selector)
+                            const data = callError.data.replace('0x', '').substring(8);
+                            if (data.length > 0) {
+                                // Try to decode as string
+                                const decoded = web3.utils.hexToUtf8('0x' + data);
+                                if (decoded && decoded.trim()) {
+                                    return decoded.trim();
+                                }
+                            }
+                        } catch (decodeError) {
+                            console.log('Could not decode revert data:', decodeError);
+                        }
+                    }
+                    
+                    return reason;
+                }
+            } catch (error) {
+                console.error('Error getting revert reason:', error);
+                return null;
             }
         }
         
@@ -1346,8 +1409,7 @@
                 
                 // Call executeQuickhack function
                 const tx = await contract.methods.executeQuickhack(quickhackId, finalTarget).send({
-                    from: connectedWalletAddress,
-                    gas: 500000 // Higher gas limit for quickhack execution
+                    from: connectedWalletAddress
                 });
                 
                 // Update result section with success
@@ -1364,7 +1426,7 @@
                 results[0].textContent = 'successful';
                 results[1].innerHTML = quickhackText;
                 results[2].innerHTML = `<a href="https://sepolia.basescan.org/tx/${tx.transactionHash}" target="_blank" style="color: #ceccde; text-decoration: underline;">${tx.transactionHash.slice(0, 10)}...${tx.transactionHash.slice(-8)}</a>`;
-                results[3].innerHTML = 'database update in ~1 minute (waiting for events sync)';
+                results[3].innerHTML = 'events update in ~1 minute, see tx logs for damages/costs';
                 results[4].innerHTML = '';
                 
                 // Note: Activity will appear in feed once subgraph syncs (~2 minutes)
@@ -1373,42 +1435,81 @@
                 
             } catch (error) {
                 console.error('Quickhack execution failed:', error);
+                console.log('Error structure:', {
+                    message: error.message,
+                    data: error.data,
+                    reason: error.reason,
+                    code: error.code,
+                    transaction: error.transaction,
+                    receipt: error.receipt
+                });
                 
-                // Parse contract error message
+                // Parse contract error message from multiple possible locations
                 let userFriendlyMessage = 'Unknown error';
                 let txHash = null;
                 
-                if (error.message) {
-                    // Extract contract revert reason
-                    if (error.message.includes('Quickhack not allowed')) {
-                        userFriendlyMessage = 'Quickhack blocked (protection, immunity, or game rules)';
-                    } else if (error.message.includes('Insufficient balance')) {
-                        userFriendlyMessage = 'Insufficient RAM balance';
-                    } else if (error.message.includes('Balance requirement not met')) {
-                        userFriendlyMessage = 'Balance requirement not met (need 10% of target balance)';
-                    } else if (error.message.includes('Rate limit')) {
-                        userFriendlyMessage = 'Rate limit: wait until next block';
-                    } else if (error.message.includes('Game is paused')) {
-                        userFriendlyMessage = 'Game is currently paused';
-                    } else if (error.message.includes('Address is banned')) {
-                        userFriendlyMessage = 'Your address is banned from attacks';
-                    } else if (error.message.includes('Withdrawal cooldown')) {
-                        userFriendlyMessage = 'Withdrawal cooldown active';
-                    } else if (error.message.includes('Effect limit reached')) {
-                        userFriendlyMessage = 'Target has maximum effects (9/9 slots)';
-                    } else if (error.message.includes('User denied transaction')) {
+                // Extract transaction hash first
+                txHash = error.transactionHash || 
+                         error.receipt?.transactionHash ||
+                         error.transaction?.hash ||
+                         error.hash;
+                
+                // If transaction was mined but reverted, try to get revert reason
+                if (txHash && error.receipt && error.receipt.status === false) {
+                    try {
+                        // Try to get the revert reason from the transaction
+                        const revertReason = await getRevertReason(txHash);
+                        if (revertReason) {
+                            console.log('Revert reason:', revertReason);
+                            
+                            // Parse the specific revert reason
+                            if (revertReason.includes('Quickhack not allowed')) {
+                                userFriendlyMessage = 'Quickhack blocked (protection, immunity, or game rules)';
+                            } else if (revertReason.includes('Insufficient balance')) {
+                                userFriendlyMessage = 'Insufficient RAM balance';
+                            } else if (revertReason.includes('Balance requirement not met')) {
+                                userFriendlyMessage = 'Balance requirement not met (need 10% of target balance)';
+                            } else if (revertReason.includes('Rate limit')) {
+                                userFriendlyMessage = 'Rate limit: wait until next block';
+                            } else if (revertReason.includes('Game is paused')) {
+                                userFriendlyMessage = 'Game is currently paused';
+                            } else if (revertReason.includes('Address is banned')) {
+                                userFriendlyMessage = 'Your address is banned from attacks';
+                            } else if (revertReason.includes('Effect limit reached')) {
+                                userFriendlyMessage = 'Target has maximum effects (9/9 slots)';
+                            } else {
+                                userFriendlyMessage = `Contract error: ${revertReason}`;
+                            }
+                        } else {
+                            userFriendlyMessage = 'Transaction reverted (reason unknown)';
+                        }
+                    } catch (revertError) {
+                        console.error('Could not get revert reason:', revertError);
+                        userFriendlyMessage = 'Transaction reverted (could not get reason)';
+                    }
+                } else {
+                    // For non-reverted transactions, fall back to error message parsing
+                    const errorMessage = error.message || 
+                                        error.data?.message || 
+                                        error.reason || 
+                                        error.error?.message || 
+                                        '';
+                    
+                    if (errorMessage.includes('User denied transaction')) {
                         userFriendlyMessage = 'Transaction cancelled by user';
-                    } else if (error.message.includes('insufficient funds')) {
+                    } else if (errorMessage.includes('insufficient funds')) {
                         userFriendlyMessage = 'Insufficient ETH for gas fees';
-                    } else {
-                        // For other errors, show a simplified version
-                        userFriendlyMessage = 'Transaction failed - check contract rules';
+                    } else if (errorMessage) {
+                        userFriendlyMessage = `Error: ${errorMessage.slice(0, 100)}${errorMessage.length > 100 ? '...' : ''}`;
                     }
                     
-                    // Try to extract transaction hash if available
-                    const txHashMatch = error.message.match(/0x[a-fA-F0-9]{64}/);
-                    if (txHashMatch) {
-                        txHash = txHashMatch[0];
+                    // Try to extract transaction hash if not already found
+                    if (!txHash) {
+                        const fullErrorText = JSON.stringify(error);
+                        const txHashMatch = fullErrorText.match(/0x[a-fA-F0-9]{64}/);
+                        if (txHashMatch) {
+                            txHash = txHashMatch[0];
+                        }
                     }
                 }
                 

@@ -6,6 +6,8 @@
 
 // PFP System Variables
 let pfpSketch = null;
+// Make pfpSketch globally accessible for cleanup
+window.pfpSketch = pfpSketch;
 // Generate random seed on page load
 let seedNumber = Math.floor(Math.random() * 900000) + 100000; // 6-digit
 let colorLetters = ['W', 'P', 'R'];
@@ -19,10 +21,11 @@ let currentPFPRotation = 0;
  */
 function initializePFP() {
     // Prevent multiple canvas creation
-    if (pfpSketch) {
+    if (pfpSketch && typeof pfpSketch.remove === 'function') {
         pfpSketch.remove();
-        pfpSketch = null;
     }
+    pfpSketch = null;
+    window.pfpSketch = null;
     
     pfpSketch = function(p) {
         let currentGlyph;
@@ -463,7 +466,8 @@ function initializePFP() {
         }
     };
 
-        new p5(pfpSketch);
+        pfpSketch = new p5(pfpSketch);
+        window.pfpSketch = pfpSketch;
 }
 
 /**
