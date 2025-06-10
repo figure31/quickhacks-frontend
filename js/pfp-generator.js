@@ -10,8 +10,7 @@ let pfpSketch = null;
 window.pfpSketch = pfpSketch;
 // Generate random seed on page load
 let seedNumber = Math.floor(Math.random() * 900000) + 100000; // 6-digit
-let colorLetters = ['W', 'P', 'R'];
-let colorLetter = colorLetters[Math.floor(Math.random() * 3)];
+let colorLetter = 'W'; // Always use white
 let currentPFPSeed = `${seedNumber}-0-${colorLetter}`;
 let currentPFPRotation = 0;
 
@@ -137,8 +136,8 @@ function initializePFP() {
                 this.p = p5instance;
                 this.patternInfo = "";
                 this.grid = this.generateSymmetricPattern();
-                // Scale cell size based on glyph size
-                this.cellSize = Math.max(8, size / 25); // 25x25 grid, minimum 8px cells
+                // Scale cell size based on glyph size - round to whole numbers to prevent gaps
+                this.cellSize = Math.max(8, Math.floor(size / 25)); // 25x25 grid, minimum 8px cells
                 this.colorGrid = this.generateColorMapping();
             }
             
@@ -453,8 +452,8 @@ function initializePFP() {
                                     p.fill('#ceccde');
                             }
                             
-                            p.rect(startX + i * this.cellSize, 
-                                   startY + j * this.cellSize, 
+                            p.rect(Math.floor(startX + i * this.cellSize), 
+                                   Math.floor(startY + j * this.cellSize), 
                                    this.cellSize, 
                                    this.cellSize);
                         }
@@ -475,8 +474,7 @@ function initializePFP() {
  */
 function regeneratePFP() {
     let seedNumber = Math.floor(Math.random() * 900000) + 100000; // 6-digit
-    let colorLetters = ['W', 'P', 'R'];
-    let colorLetter = colorLetters[Math.floor(Math.random() * 3)];
+    let colorLetter = 'W'; // Always use white
     currentPFPSeed = `${seedNumber}-0-${colorLetter}`;
     currentPFPRotation = 0;
     

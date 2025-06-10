@@ -12,6 +12,7 @@ let mapPlayers = [];
 let contractNode = null;
 let animationFrames = [];
 let mapPlayerData = []; // Independent map player data
+let targetedAddress = null; // Address currently selected as target
 
 /**
  * Fetch players specifically for map visualization
@@ -105,6 +106,72 @@ async function refreshGameMap() {
 }
 
 /**
+ * Set the targeted address for red highlighting on the map
+ * @param {string} address - The address to highlight, or null to clear
+ */
+function setTargetedAddress(address) {
+    targetedAddress = address ? address.toLowerCase() : null;
+    // Just redraw without regenerating positions (no need to call updateMapPlayers)
+    // The draw loop will automatically use the new targetedAddress value
+    
+    // Add binary loading animation to target input field
+    const targetInput = document.getElementById('targetAddressInput');
+    if (targetInput && address) {
+        // Show random binary loading 
+        const binaryInterval = setInterval(() => {
+            // Generate random 8-character binary string
+            let randomBinary = '';
+            for (let i = 0; i < 8; i++) {
+                randomBinary += Math.random() < 0.5 ? '0' : '1';
+            }
+            targetInput.value = randomBinary;
+        }, 150); // Change every 150ms
+        
+        // After 800ms, show the actual new address
+        setTimeout(() => {
+            clearInterval(binaryInterval);
+            targetInput.value = address;
+        }, 800);
+    }
+    
+    // Update target input styling based on whether targeting other player
+    updateTargetInputStyling(address);
+}
+
+/**
+ * Update the styling of target input field based on whether targeting another player
+ * @param {string} address - The target address
+ */
+function updateTargetInputStyling(address) {
+    const targetInput = document.getElementById('targetAddressInput');
+    const targetDetailItem = targetInput ? targetInput.closest('.detail-item') : null;
+    
+    if (!targetInput || !targetDetailItem) return;
+    
+    // Check if we have a connected wallet and a target address
+    const hasConnectedWallet = typeof connectedWalletAddress !== 'undefined' && connectedWalletAddress;
+    const hasTargetAddress = address && address.trim();
+    
+    // Remove all targeting classes first
+    targetInput.classList.remove('targeting-other', 'targeting-self');
+    targetDetailItem.classList.remove('targeting-other', 'targeting-self');
+    
+    if (hasConnectedWallet && hasTargetAddress) {
+        const isSelfTargeting = address.toLowerCase() === connectedWalletAddress.toLowerCase();
+        
+        if (isSelfTargeting) {
+            // Add purple styling for self-targeting
+            targetInput.classList.add('targeting-self');
+            targetDetailItem.classList.add('targeting-self');
+        } else {
+            // Add red styling for targeting other players
+            targetInput.classList.add('targeting-other');
+            targetDetailItem.classList.add('targeting-other');
+        }
+    }
+}
+
+/**
  * Initialize the game map visualization system
  * Creates p5.js canvas and sets up the network topology display
  */
@@ -164,20 +231,52 @@ async function initializeGameMap() {
                     const bossAddress = '0x05351d48d04e16b05e388394e6abb25054d0ad5a';
                     const teamAddress = '0xd63a12d5dd3bccc018735eaebb70a51ed351b56e';
                     
-                    if (player.address.toLowerCase() === bossAddress.toLowerCase() || 
-                        player.address.toLowerCase() === teamAddress.toLowerCase()) {
-                        // Draw like central node: background fill + white outline
+                    // Check if this is the connected player (access global variable from index.html)
+                    const isConnectedPlayer = typeof connectedWalletAddress !== 'undefined' && 
+                                            connectedWalletAddress && 
+                                            player.address.toLowerCase() === connectedWalletAddress.toLowerCase();
+                    
+                    // Check if this is the targeted player
+                    const isTargetedPlayer = targetedAddress && 
+                                           player.address.toLowerCase() === targetedAddress.toLowerCase() &&
+                                           !isConnectedPlayer; // Don't show red outline for connected player
+                    
+                    // Check if this is boss/team address
+                    const isBossOrTeam = player.address.toLowerCase() === bossAddress.toLowerCase() || 
+                                        player.address.toLowerCase() === teamAddress.toLowerCase();
+                    
+                    if (isBossOrTeam && !isTargetedPlayer) {
+                        // Draw like central node: background fill + white outline (only when not targeted)
                         p.fill('#1f1e28');
                         p.stroke('#ceccde');
                         p.strokeWeight(1);
+                        p.rect(player.x - player.size/2, player.y - player.size/2, 
+                               player.size, player.size);
+                    } else if (isBossOrTeam && isTargetedPlayer) {
+                        // Boss/team node when targeted: red fill
+                        p.fill('#d42d17');
+                        p.noStroke();
+                        p.rect(player.x - player.size/2, player.y - player.size/2, 
+                               player.size, player.size);
+                    } else if (isConnectedPlayer) {
+                        // Connected player: draw purple node only
+                        p.fill('#875fff'); // Purple color for connected player node
+                        p.noStroke();
+                        p.rect(player.x - player.size/2, player.y - player.size/2, 
+                               player.size, player.size);
+                    } else if (isTargetedPlayer) {
+                        // Targeted player: draw red node only
+                        p.fill('#d42d17'); // Red color for targeted player node
+                        p.noStroke();
+                        p.rect(player.x - player.size/2, player.y - player.size/2, 
+                               player.size, player.size);
                     } else {
                         // Normal player styling: solid color fill
                         p.fill(player.color);
                         p.noStroke();
+                        p.rect(player.x - player.size/2, player.y - player.size/2, 
+                               player.size, player.size);
                     }
-                    
-                    p.rect(player.x - player.size/2, player.y - player.size/2, 
-                           player.size, player.size);
                 }
             });
         }
@@ -191,6 +290,8 @@ async function initializeGameMap() {
                     const targetInput = document.querySelector('.target-input');
                     if (targetInput) {
                         targetInput.value = player.address;
+                        // Highlight this player on the map with red outline
+                        setTargetedAddress(player.address);
                     }
                 }
             });
@@ -210,23 +311,8 @@ async function initializeGameMap() {
             let playersToDisplay = mapPlayerData;
             
             playersToDisplay.forEach((player, index) => {
-                // Generate a simulated PFP seed for each player (future: store in database)
-                let seedNumber = Math.floor(Math.random() * 999999) + 100000; // 6-digit seed
-                let rotation = Math.floor(Math.random() * 4) * 90; // 0, 90, 180, 270
-                let colorLetters = ['W', 'P', 'R'];
-                let colorLetter = colorLetters[Math.floor(Math.random() * 3)];
-                
-                // Create full seed format: seed-rotation-color
-                player.pfpSeed = `${seedNumber}-${rotation}-${colorLetter}`;
-                
-                // Extract color from seed
-                let playerColor;
-                switch(colorLetter) {
-                    case 'W': playerColor = '#ceccde'; break; // White
-                    case 'P': playerColor = '#875fff'; break; // Purple  
-                    case 'R': playerColor = '#d42d17'; break; // Red
-                    default: playerColor = '#ceccde';
-                }
+                // All player nodes are now white
+                let playerColor = '#ceccde'; // White color for all players
                 
                 // Spread players across canvas with more horizontal distribution
                 let x, y;

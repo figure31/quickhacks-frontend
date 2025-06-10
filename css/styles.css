@@ -198,9 +198,9 @@ body {
 }
 
 .seed-display {
-    color: #875fff;
+    color: #ceccde;
     font-family: 'ProtoMono', 'Courier New', monospace;
-    font-size: 9px;
+    font-size: 10px;
     margin-right: 5px;
 }
 
@@ -306,7 +306,7 @@ body {
 }
 
 .detail-section {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .detail-title {
@@ -316,7 +316,7 @@ body {
 }
 
 .detail-item {
-    margin: 3px 0;
+    margin: 8px 0;
     color: #ceccde;
 }
 
@@ -542,24 +542,8 @@ body {
     color: #875fff;
 }
 
-/* Activity Item Styling based on symbols */
+/* Activity Item Styling - all white */
 .activity-item {
-    color: #ceccde;
-}
-
-.activity-item.attack {
-    color: #d42d17;
-}
-
-.activity-item.self-cast {
-    color: #875fff;
-}
-
-.activity-item.deposit {
-    color: #ceccde;
-}
-
-.activity-item.withdrawal {
     color: #ceccde;
 }
 
@@ -602,6 +586,28 @@ body {
     padding: 5px 10px;
     width: auto;
     min-width: 320px;
+}
+
+/* Red styling when targeting other players - only text color, not border */
+.target-input.targeting-other {
+    color: #d42d17;
+}
+
+/* Purple styling when self-targeting - only text color, not border */
+.target-input.targeting-self {
+    color: #875fff;
+}
+
+/* Keep target label normal color when targeting */
+.detail-item.targeting-other,
+.detail-item.targeting-self {
+    color: #ceccde;
+}
+
+
+/* Purple styling for connected player title */
+#profileTitle.connected-player {
+    color: #875fff;
 }
 
 .quickhack-type-buttons {
@@ -674,11 +680,27 @@ body {
 }
 
 .target-balance {
-    color: #875fff;
+    color: #ceccde;
 }
 
 .ram-value {
     color: #875fff;
+}
+
+/* Override ram-value color for player profile section - should be white */
+.profile-content .ram-value {
+    color: #ceccde;
+}
+
+/* Override ram-value color for attack simulator estimated results - should be white */
+.attack-simulator .ram-value {
+    color: #ceccde;
+}
+
+/* Override ram-value color for game status/state in header - should be white */
+.header .header-item:nth-child(3) .ram-value,
+.header .header-item:nth-child(4) .ram-value {
+    color: #ceccde;
 }
 
 .loading-container {
@@ -721,22 +743,80 @@ body {
 }
 
 .quickhack-attack {
-    color: #d42d17;
+    color: #ceccde;
 }
 
 .quickhack-self-cast {
-    color: #875fff;
+    color: #ceccde;
 }
 
 /* Clickable addresses in activity feed */
 .clickable-address {
     cursor: pointer;
-    text-decoration: underline;
+    text-decoration: none; /* Remove default underline */
     transition: opacity 0.2s;
 }
 
 .clickable-address:hover {
+    opacity: 0.5;
+}
+
+
+/* Tab System for Rules Section */
+.tab-container {
+    display: flex;
+    width: 100%;
+    height: 40px;
+    background-color: #1f1e28;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px solid #ceccde;
+}
+
+.tab-button {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: #ceccde;
+    font-weight: bold;
+    font-family: 'ProtoMono', 'Courier New', monospace;
+    font-size: 10px;
+    padding: 10px 15px;
+    text-align: left;
+    flex: 1;
+}
+
+.tab-button:hover {
     opacity: 0.7;
+}
+
+.tab-button.active {
+    color: #ceccde;
+}
+
+.tab-container::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #ceccde;
+    transform: translateX(-50%);
+}
+
+/* Remove border-bottom from panel-header when it contains tabs */
+.rules-section .panel-header {
+    border-bottom: none;
+    padding: 0;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
 }
 
 /* Animation Classes */

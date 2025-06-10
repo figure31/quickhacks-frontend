@@ -174,7 +174,7 @@
 
         <div class="right-panel">
             <div class="attack-simulator">
-                <div class="panel-header">ATTACK SIMULATOR</div>
+                <div class="panel-header">QUICKHACK SIMULATOR</div>
                 <div class="section-loading" id="simulatorLoading">
                     <div class="loading-text">loading simulator...</div>
                     <div class="loading-bar-container">
@@ -250,12 +250,14 @@
             </div>
 
             <div class="rules-section">
-                <div class="panel-header">GAME RULES</div>
-                <div class="rules-content">
-                    <div class="detail-section">
-                        <div class="detail-title">Quickhacks</div>
-                        <div class="detail-item">Accelerationist/cyberpunk blockchain PVP extraction hacker game. Players build stats and steal tokens from each other using quickhacks by depositing ETH to receive RAM tokens. All RAM costs are sent to a boss address for recirculation. $RG holders can claim an attack/defense bonus.</div>
+                <div class="panel-header">
+                    <div class="tab-container">
+                        <div class="tab-button active" data-tab="game-rules">GAME PARAMETERS</div>
+                        <div class="tab-button" data-tab="how-to-play">HOW TO PLAY</div>
                     </div>
+                </div>
+                <div class="rules-content">
+                    <div class="tab-content active" id="game-rules-content">
 
                     <div class="detail-section">
                         <div class="detail-title">attack quickhacks</div>
@@ -328,12 +330,73 @@
                     <div class="detail-section">
                         <div class="detail-title">Created by Figure31 and dreamed up by the Reaper Agent </div>
                     </div>
+                    </div>
+
+                    <div class="tab-content" id="how-to-play-content">
+                        <div class="detail-section">
+                            <div class="detail-title">Quickhacks game</div>
+                            <div class="detail-item">Accelerationist/cyberpunk blockchain PVP extraction hacker game.</div>
+                            <div class="detail-item">The goal is simple. Steal RAM from other players and survive. $RG holders can claim an attack/defense bonus.</div>
+
+                        </div>
+
+                        <div class="detail-section">
+                            <div class="detail-title">RAM</div>
+                            <div class="detail-item">You need RAM tokens in order to play. To get some, deposit ETH into the game contract. The ETH/RAM rate is fixed at 1/10,000,000. Any player with a RAM balance is considered active and can attack or be attacked. A withdrawal cooldown of 30 minutes mitigates MEV bots.</div>
+                        </div>
+
+                        <div class="detail-section">
+                            <div class="detail-title">How to use quickhacks</div>
+                            <div class="detail-item">First connect your wallet and make sure you have RAM tokens</div>
+                            <div class="detail-item">You can cast quickhacks on other players (attacks) or yourself (self-casts). Each have different costs, damages, and effects. Active effects and player stats influence the costs and damages calculations. Quickhacks with effects use slots, you have 9 available.</div>
+                            <div class="detail-item">Any address displayed in the active players list, the activity feeds, or nodes on the game map are clickable and will be filled inside the target field of the quickhack simulator. The game map shows a node for every active player.</div>
+                            <div class="detail-item">Before casting a quickhack, click refresh target, then execute the quickhack. The outcome of the quickhack should soon be reflected on the page. </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <div class="detail-title">Costs & Damages</div>
+                            <div class="detail-item">All quickhacks costs are sent to a public BOSS address that can be attacked by any player to reclaim tokens</div>
+                            <div class="detail-item">Players keep the damage rewards of their attacks</div>
+                            <div class="detail-item">Damages and costs are influenced by active effects and the attack/defense bonus stats of any player. Costs scale up with a player's attack bonus to maintain balance. Use different self-cast combos to maximize your progress, increase damages, and lower costs.</div>
+                        </div>
+
+                        <div class="detail-section">
+                            <div class="detail-title">Self-Casts</div>
+                            <div class="detail-item">These quickhacks are used to boost your stats before attacking others, or to protect yourself. They all use a different number of slots.</div>
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Tab switching functionality for rules section
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button
+                    this.classList.add('active');
+
+                    // Show corresponding content
+                    const targetContent = document.getElementById(targetTab + '-content');
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+        });
+
         // Player data - initialized empty, populated from subgraph
         let players = [];
 
@@ -483,25 +546,25 @@
                 switch (act.type) {
                     case 'ATTACK':
                         return {
-                            html: `⮕ ${quickhackName} <span class="clickable-address" data-address="${act.target.id}" style="cursor: pointer; text-decoration: underline;">${targetShort}</span>`,
-                            className: 'attack'
+                            html: `⮕ ${quickhackName} <span class="clickable-address" data-address="${act.target.id}">${targetShort}</span>`,
+                            className: ''
                         };
                     case 'SELF_CAST':
                         return {
                             html: `⬅ ${quickhackName}`,
-                            className: 'self-cast'
+                            className: ''
                         };
                     case 'DEPOSIT':
                         const ethAmount = (parseFloat(act.amount) / 1e18).toFixed(3);
                         return {
                             html: `⬇ ${ethAmount} ETH`,
-                            className: 'deposit'
+                            className: ''
                         };
                     case 'WITHDRAWAL':
                         const ramAmount = Math.floor(parseFloat(act.amount) / 1000);
                         return {
                             html: `⬆ ${ramAmount}K RAM`,
-                            className: 'withdrawal'
+                            className: ''
                         };
                     default:
                         return {
@@ -670,7 +733,14 @@
                 addressElement.addEventListener('click', function(event) {
                     event.stopPropagation(); // Prevent toggle player details
                     const targetInput = document.querySelector('.target-input');
-                    targetInput.value = this.getAttribute('data-address');
+                    const address = this.getAttribute('data-address');
+                    targetInput.value = address;
+                    
+                    
+                    // Highlight this address on the map
+                    if (typeof setTargetedAddress === 'function') {
+                        setTargetedAddress(address);
+                    }
                 });
             });
 
@@ -987,19 +1057,13 @@
                 detailItems[5].innerHTML = `quickhacks      [${totalQuickhacks}]`;
             }
             if (detailItems[6]) {
-                // Calculate total attack bonus including cheating death
+                // Use subgraph attack bonus (now includes cheating death)
                 let totalAttackBonus = parseInt(player.attackBonus || 0);
-                if (player.isCheatingDeath) {
-                    totalAttackBonus += 3000; // 30% bonus
-                }
                 detailItems[6].innerHTML = `⮕ damage dealt    <span class="ram-value">${parseInt(player.damageDealt).toLocaleString()} RAM</span> [+${totalAttackBonus} attack]`;
             }
             if (detailItems[7]) {
-                // Calculate total defense bonus including cheating death
+                // Use subgraph defense bonus (now includes cheating death)
                 let totalDefenseBonus = parseInt(player.defenseBonus || 0);
-                if (player.isCheatingDeath) {
-                    totalDefenseBonus += 3000; // 30% bonus
-                }
                 detailItems[7].innerHTML = `⬅ damage taken    <span class="ram-value">${parseInt(player.damageTaken).toLocaleString()} RAM</span> [+${totalDefenseBonus} defence]`;
             }
 
@@ -1070,20 +1134,17 @@
                     
                     if (isIncoming) {
                         // Incoming attack
-                        activityDiv.classList.add('attack');
                         const attackerShort = activity.player.id.slice(0, 6) + '...' + activity.player.id.slice(-4);
-                        activityDiv.innerHTML = `⬅ ${quickhackName} from <span class="clickable-address" data-address="${activity.player.id}" style="color: #d42d17; cursor: pointer; text-decoration: underline;">${attackerShort}</span>`;
+                        activityDiv.innerHTML = `⬅ ${quickhackName} from <span class="clickable-address" data-address="${activity.player.id}">${attackerShort}</span>`;
                     } else {
                         // Outgoing activity
                         const targetShort = activity.target ? activity.target.id.slice(0, 6) + '...' + activity.target.id.slice(-4) : '';
                         
                         switch (activity.type) {
                             case 'ATTACK':
-                                activityDiv.classList.add('attack');
-                                activityDiv.innerHTML = `⮕ ${quickhackName} <span class="clickable-address" data-address="${activity.target.id}" style="color: #d42d17; cursor: pointer; text-decoration: underline;">${targetShort}</span>`;
+                                activityDiv.innerHTML = `⮕ ${quickhackName} <span class="clickable-address" data-address="${activity.target.id}">${targetShort}</span>`;
                                 break;
                             case 'SELF_CAST':
-                                activityDiv.classList.add('self-cast');
                                 activityDiv.textContent = `⬅ ${quickhackName}`;
                                 break;
                             case 'DEPOSIT':
@@ -1162,7 +1223,8 @@
             const pfpSection = document.getElementById('pfpSection');
             const pfpLoading = document.getElementById('pfpLoading');
             
-            profileTitle.textContent = `PLAYER ${getResponsiveAddress(connectedWalletAddress)}`;
+            profileTitle.innerHTML = `PLAYER <span class="clickable-address" data-address="${connectedWalletAddress}" style="color: #875fff;">${getResponsiveAddress(connectedWalletAddress)}</span>`;
+            profileTitle.classList.remove('connected-player'); // Remove purple styling from whole title
             connectBtn.textContent = 'x';
             profileSection.style.display = 'block';
             profileDisconnected.classList.remove('show');
@@ -1173,6 +1235,19 @@
             
             // Initialize PFP from external module
             initializePFP();
+            
+            // Refresh game map to highlight connected player
+            if (typeof refreshGameMap === 'function') {
+                refreshGameMap();
+            }
+            
+            // Update target input styling in case there's already a target
+            if (typeof updateTargetInputStyling === 'function') {
+                const targetInput = document.getElementById('targetAddressInput');
+                if (targetInput) {
+                    updateTargetInputStyling(targetInput.value);
+                }
+            }
             
             isPlayerConnected = true;
         }
@@ -1187,6 +1262,7 @@
             const pfpLoading = document.getElementById('pfpLoading');
             
             profileTitle.textContent = 'PLAYER';
+            profileTitle.classList.remove('connected-player'); // Remove purple styling
             connectBtn.textContent = 'connect';
             profileSection.style.display = 'none';
             profileDisconnected.classList.add('show');
@@ -1211,6 +1287,19 @@
             
             // Reset estimated results
             updateEstimatedResults('[connect]', '[connect]');
+            
+            // Refresh game map to remove player highlighting
+            if (typeof refreshGameMap === 'function') {
+                refreshGameMap();
+            }
+            
+            // Update target input styling since no wallet is connected
+            if (typeof updateTargetInputStyling === 'function') {
+                const targetInput = document.getElementById('targetAddressInput');
+                if (targetInput) {
+                    updateTargetInputStyling(targetInput.value);
+                }
+            }
         }
 
         async function togglePlayerConnection() {
@@ -1255,8 +1344,15 @@
                 statusDiv.innerHTML = `✅ deposit successful: <a href="https://sepolia.basescan.org/tx/${tx.transactionHash}" target="_blank" style="color: #ceccde; text-decoration: underline;">${tx.transactionHash.slice(0, 10)}...${tx.transactionHash.slice(-8)}</a>`;
                 statusDiv.style.display = 'block';
                 
-                // Clear input (don't refresh profile due to subgraph delay)
+                // Clear input and schedule player data refresh
                 document.getElementById('depositAmount').value = '';
+                
+                // Schedule player data refresh after subgraph indexing delay
+                setTimeout(() => {
+                    if (connectedWalletAddress) {
+                        updatePlayerProfile();
+                    }
+                }, 15000);
                 
             } catch (error) {
                 console.error('Deposit failed:', error);
@@ -1294,8 +1390,15 @@
                 statusDiv.innerHTML = `✅ withdrawal successful: <a href="https://sepolia.basescan.org/tx/${tx.transactionHash}" target="_blank" style="color: #ceccde; text-decoration: underline;">${tx.transactionHash.slice(0, 10)}...${tx.transactionHash.slice(-8)}</a>`;
                 statusDiv.style.display = 'block';
                 
-                // Clear input (don't refresh profile due to subgraph delay)
+                // Clear input and schedule player data refresh
                 document.getElementById('withdrawAmount').value = '';
+                
+                // Schedule player data refresh after subgraph indexing delay
+                setTimeout(() => {
+                    if (connectedWalletAddress) {
+                        updatePlayerProfile();
+                    }
+                }, 15000);
                 
             } catch (error) {
                 console.error('Withdrawal failed:', error);
@@ -1432,6 +1535,13 @@
                 // Note: Activity will appear in feed once subgraph syncs (~2 minutes)
                 
                 resultSection.classList.add('show');
+                
+                // Schedule player data refresh after subgraph indexing delay
+                setTimeout(() => {
+                    if (connectedWalletAddress) {
+                        updatePlayerProfile();
+                    }
+                }, 15000);
                 
             } catch (error) {
                 console.error('Quickhack execution failed:', error);
@@ -1797,6 +1907,10 @@
             if (targetInput) {
                 targetInput.value = address;
                 console.log('Set target to:', address);
+                // Highlight this address on the map
+                if (typeof setTargetedAddress === 'function') {
+                    setTargetedAddress(address);
+                }
             }
         }
 
@@ -1913,9 +2027,7 @@
         
         // Function to display target player data
         async function displayTargetData(player) {
-            // Read cheating death status from contract
-            const isCheatingDeath = await getPlayerCheatingDeathStatus(player.id);
-            player.isCheatingDeath = isCheatingDeath;
+            // Cheating death bonuses are now included directly in subgraph attackBonus/defenseBonus data
             
             // Balance
             const balance = parseInt(player.currentBalance);
@@ -1925,11 +2037,7 @@
             let attackBonus = player.attackBonus || 0;
             let defenseBonus = player.defenseBonus || 0;
             
-            // Add cheating death bonuses if applicable
-            if (isCheatingDeath) {
-                attackBonus += 3000; // 30%
-                defenseBonus += 3000; // 30%
-            }
+            // Cheating death bonuses are now included in the subgraph data
             
             document.getElementById('targetAttack').textContent = `+${attackBonus}`;
             document.getElementById('targetDefense').textContent = `+${defenseBonus}`;
@@ -2423,13 +2531,8 @@
                     return;
                 }
                 
-                // Read cheating death status from contract for attacker
-                const attackerCheatingDeath = await getPlayerCheatingDeathStatus(connectedWalletAddress);
-                attackerData.isCheatingDeath = attackerCheatingDeath;
-                
-                console.log('Attacker data loaded (including cheating death status):', {
+                console.log('Attacker data loaded:', {
                     address: connectedWalletAddress,
-                    isCheatingDeath: attackerCheatingDeath,
                     balance: attackerData.currentBalance
                 });
 
@@ -2465,10 +2568,10 @@
                     
                     if (isTargetingSelf && !params.selfCastOnly) {
                         // Attack quickhack on self
-                        updateEstimatedResults("don't hack yourself", "don't hack yourself");
+                        updateEstimatedResults("[don't hack yourself]", "[don't hack yourself]");
                     } else if (!isTargetingSelf && params.selfCastOnly) {
                         // Self-cast on enemy
-                        updateEstimatedResults("cannot use self-cast on enemy", "cannot use self-cast on enemy");
+                        updateEstimatedResults("[cannot use self-cast on enemy]", "[cannot use self-cast on enemy]");
                     }
                     return;
                 }
@@ -2560,10 +2663,7 @@
             // Calculate attacker's total attack bonus
             let attackBonus = parseInt(attackerData.attackBonus || 0);
             
-            // Add cheating death bonus if applicable (need to read from contract)
-            if (attackerData.isCheatingDeath) {
-                attackBonus += 3000; // 30% attack bonus
-            }
+            // Cheating death bonus is now included in the subgraph attackBonus data
 
             // Add effect bonuses for attack damage (BERSERK, DOWNSTREAM)
             const attackEffectBonus = calculateEffectBonus(attackerData.activeEffects, 1, currentBlockNumber); // ATTACK_DAMAGE_MOD
@@ -2581,10 +2681,7 @@
             // Calculate defender's defense bonus
             let defenseBonus = parseInt(targetData.defenseBonus || 0);
             
-            // Add cheating death bonus if applicable
-            if (targetData.isCheatingDeath) {
-                defenseBonus += 3000; // 30% defense bonus
-            }
+            // Cheating death bonus is now included in the subgraph defenseBonus data
 
             // Add effect bonuses/penalties for defense (OVERHEAT, DOWNSTREAM, ICEWALL)
             const defenseEffectBonus = calculateEffectBonus(targetData.activeEffects, 2, currentBlockNumber); // DEFENSE_MOD
@@ -2656,10 +2753,7 @@
                 // Apply power scaling to self-cast costs based on attacker's attack bonus
                 let attackBonus = parseInt(attackerData.attackBonus || 0);
                 
-                // Add cheating death bonus if applicable
-                if (attackerData.isCheatingDeath) {
-                    attackBonus += 3000; // 30% attack bonus
-                }
+                // Cheating death bonus is now included in the subgraph attackBonus data
                 
                 if (attackBonus > 0) {
                     const powerTax = Math.floor(attackBonus / 2); // Attack bonus ÷ 2
@@ -2701,10 +2795,7 @@
             // Apply power scaling to attack costs based on attacker's attack bonus
             let attackBonus = parseInt(attackerData.attackBonus || 0);
             
-            // Add cheating death bonus if applicable
-            if (attackerData.isCheatingDeath) {
-                attackBonus += 3000; // 30% attack bonus
-            }
+            // Cheating death bonus is now included in the subgraph attackBonus data
             
             if (attackBonus > 0) {
                 const powerTax = Math.floor(attackBonus / 2); // Attack bonus ÷ 2
@@ -2773,10 +2864,10 @@
                     
                     if (isTargetingSelf && !params.selfCastOnly) {
                         // Attack quickhack on self
-                        updateEstimatedResults("don't hack yourself", "don't hack yourself");
+                        updateEstimatedResults("[don't hack yourself]", "[don't hack yourself]");
                     } else if (!isTargetingSelf && params.selfCastOnly) {
                         // Self-cast on enemy
-                        updateEstimatedResults("cannot use self-cast on enemy", "cannot use self-cast on enemy");
+                        updateEstimatedResults("[cannot use self-cast on enemy]", "[cannot use self-cast on enemy]");
                     }
                     return;
                 }
@@ -2981,7 +3072,14 @@
                 addr.addEventListener('click', function() {
                     const targetInput = document.querySelector('.target-input');
                     if (targetInput) {
-                        targetInput.value = this.getAttribute('data-address');
+                        const address = this.getAttribute('data-address');
+                        targetInput.value = address;
+                        
+                        
+                        // Highlight this address on the map
+                        if (typeof setTargetedAddress === 'function') {
+                            setTargetedAddress(address);
+                        }
                     }
                 });
             });
@@ -3043,15 +3141,7 @@
                 }
             });
             
-            // Style activity items based on quickhack type
-            document.querySelectorAll('.activity-item').forEach(activity => {
-                const text = activity.textContent;
-                if (text.includes('⮕')) {
-                    activity.classList.add('attack');
-                } else if (text.includes('⬅') && !text.includes('⬆')) {
-                    activity.classList.add('self-cast');
-                }
-            });
+            // Activity items now use default white color
         }
 
         // Update header status styling
@@ -3150,6 +3240,11 @@
                 setInterval(loadCurrentBlock, 60000); // Update block number every minute
                 setInterval(loadGasPrice, 180000); // Update gas price every 3 minutes
                 setInterval(refreshGameStateAndCalculations, 180000); // Update game state every 3 minutes
+                setInterval(() => {
+                    if (connectedWalletAddress) {
+                        updatePlayerProfile();
+                    }
+                }, 120000); // Update player profile every 2 minutes
             }, 1500);
             
             setTimeout(() => {
@@ -3190,9 +3285,33 @@
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('clickable-address')) {
                     const targetInput = document.querySelector('.target-input');
-                    targetInput.value = e.target.getAttribute('data-address');
+                    const address = e.target.getAttribute('data-address');
+                    targetInput.value = address;
+                    
+                    
+                    // Highlight this address on the map
+                    if (typeof setTargetedAddress === 'function') {
+                        setTargetedAddress(address);
+                    }
                 }
             });
+            
+            // Add listener to target input field for manual typing
+            setTimeout(() => {
+                const targetInput = document.getElementById('targetAddressInput');
+                if (targetInput) {
+                    targetInput.addEventListener('input', function() {
+                        const address = this.value.trim();
+                        if (typeof setTargetedAddress === 'function') {
+                            if (address && address.length >= 10) { // Basic address length check
+                                setTargetedAddress(address);
+                            } else {
+                                setTargetedAddress(null); // Clear highlighting if input is empty/invalid
+                            }
+                        }
+                    });
+                }
+            }, 100);
             
             // Handle window resize to update responsive addresses
             window.addEventListener('resize', function() {
@@ -3206,7 +3325,7 @@
                 // Update player profile title if connected
                 if (connectedWalletAddress) {
                     const profileTitle = document.getElementById('profileTitle');
-                    profileTitle.textContent = `PLAYER ${getResponsiveAddress(connectedWalletAddress)}`;
+                    profileTitle.innerHTML = `PLAYER <span class="clickable-address" data-address="${connectedWalletAddress}" style="color: #875fff;">${getResponsiveAddress(connectedWalletAddress)}</span>`;
                 }
             });
         });
