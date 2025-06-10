@@ -18,16 +18,16 @@
 
 body {
     font-family: 'ProtoMono', 'Courier New', monospace;
-    background-color: #1f1e28;
-    color: #ceccde;
+    background-color: #171a1d;
+    color: #d9d8eb;
     font-size: 10px;
     font-weight: 300;
     line-height: 1.4;
 }
 
 .header {
-    background-color: #1f1e28;
-    border-bottom: 1px solid #ceccde;
+    background-color: #171a1d;
+    border-bottom: 1px solid #d9d8eb;
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -40,11 +40,11 @@ body {
 }
 
 .header-label {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .header-value {
-    color: #ceccde;
+    color: #d9d8eb;
     font-weight: bold;
 }
 
@@ -61,15 +61,15 @@ body {
     width: 50%;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #ceccde;
+    border-right: 1px solid #d9d8eb;
 }
 
 .game-map-section {
     height: 42vh;
     min-height: 42vh;
     max-height: 42vh;
-    border-bottom: 1px solid #ceccde;
-    background-color: #1f1e28;
+    border-bottom: 1px solid #d9d8eb;
+    background-color: #171a1d;
     display: flex;
     flex-direction: column;
 }
@@ -82,8 +82,8 @@ body {
 
 .left-panel {
     width: 50%;
-    border-right: 1px solid #ceccde;
-    background-color: #1f1e28;
+    border-right: 1px solid #d9d8eb;
+    background-color: #171a1d;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -97,7 +97,7 @@ body {
 
 .middle-panel {
     width: 50%;
-    background-color: #1f1e28;
+    background-color: #171a1d;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -111,25 +111,25 @@ body {
 
 .third-panel {
     width: 25%;
-    border-right: 1px solid #ceccde;
+    border-right: 1px solid #d9d8eb;
     display: flex;
     flex-direction: column;
-    background-color: #1f1e28;
+    background-color: #171a1d;
 }
 
 .right-panel {
     width: 25%;
     display: flex;
     flex-direction: column;
-    background-color: #1f1e28;
+    background-color: #171a1d;
 }
 
 .panel-header {
-    background-color: #1f1e28;
+    background-color: #171a1d;
     padding: 10px 15px;
-    border-bottom: 1px solid #ceccde;
+    border-bottom: 1px solid #d9d8eb;
     font-weight: bold;
-    color: #ceccde;
+    color: #d9d8eb;
     height: 40px;
     box-sizing: border-box;
     display: flex;
@@ -137,11 +137,11 @@ body {
 }
 
 .panel-header-with-button {
-    background-color: #1f1e28;
+    background-color: #171a1d;
     padding: 10px 15px;
-    border-bottom: 1px solid #ceccde;
+    border-bottom: 1px solid #d9d8eb;
     font-weight: bold;
-    color: #ceccde;
+    color: #d9d8eb;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -150,9 +150,9 @@ body {
 }
 
 .disconnect-btn {
-    background-color: #ceccde;
-    color: #1f1e28;
-    border: 1px solid #ceccde;
+    background-color: #d9d8eb;
+    color: #171a1d;
+    border: 1px solid #d9d8eb;
     padding: 1px 4px;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 9px;
@@ -166,8 +166,8 @@ body {
 }
 
 .disconnect-btn:hover {
-    background-color: #1f1e28;
-    color: #ceccde;
+    background-color: #171a1d;
+    color: #d9d8eb;
 }
 
 .pfp-controls {
@@ -177,9 +177,9 @@ body {
 }
 
 .pfp-btn {
-    background-color: #ceccde;
-    color: #1f1e28;
-    border: 1px solid #ceccde;
+    background-color: #d9d8eb;
+    color: #171a1d;
+    border: 1px solid #d9d8eb;
     padding: 0px 4px;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 9px;
@@ -193,12 +193,12 @@ body {
 }
 
 .pfp-btn:hover {
-    background-color: #1f1e28;
-    color: #ceccde;
+    background-color: #171a1d;
+    color: #d9d8eb;
 }
 
 .seed-display {
-    color: #ceccde;
+    color: #d9d8eb;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
     margin-right: 5px;
@@ -214,9 +214,9 @@ body {
 }
 
 .transaction-btn {
-    background-color: #ceccde;
-    color: #1f1e28;
-    border: 1px solid #ceccde;
+    background-color: #d9d8eb;
+    color: #171a1d;
+    border: 1px solid #d9d8eb;
     padding: 2px 6px;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
@@ -225,14 +225,14 @@ body {
 }
 
 .transaction-btn:hover {
-    background-color: #1f1e28;
-    color: #ceccde;
+    background-color: #171a1d;
+    color: #d9d8eb;
 }
 
 .transaction-input {
-    background-color: #1f1e28;
-    border: 1px solid #ceccde;
-    color: #ceccde;
+    background-color: #171a1d;
+    border: 1px solid #d9d8eb;
+    color: #d9d8eb;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
     padding: 2px 6px;
@@ -244,7 +244,7 @@ body {
 }
 
 .transaction-label {
-    color: #ceccde;
+    color: #d9d8eb;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
 }
@@ -259,7 +259,7 @@ body {
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: #ceccde;
+    color: #d9d8eb;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
 }
@@ -270,7 +270,7 @@ body {
 }
 
 .player-item {
-    border-bottom: 1px solid #ceccde;
+    border-bottom: 1px solid #d9d8eb;
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -287,7 +287,7 @@ body {
 }
 
 .player-address {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .player-balance {
@@ -296,9 +296,9 @@ body {
 
 .player-details {
     display: none;
-    background-color: #1f1e28;
+    background-color: #171a1d;
     padding: 15px;
-    border-top: 1px solid #ceccde;
+    border-top: 1px solid #d9d8eb;
 }
 
 .player-details.expanded {
@@ -310,23 +310,23 @@ body {
 }
 
 .detail-title {
-    color: #ceccde;
+    color: #d9d8eb;
     margin-bottom: 10px;
     text-transform: uppercase;
 }
 
 .detail-item {
     margin: 8px 0;
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .effect-item {
-    color: #ceccde;
+    color: #d9d8eb;
     margin: 2px 0;
 }
 
 .activity-item {
-    color: #ceccde;
+    color: #d9d8eb;
     margin: 2px 0;
 }
 
@@ -347,9 +347,9 @@ body {
 
 .feed-item {
     padding: 10px 15px;
-    border-bottom: 1px solid #ceccde;
+    border-bottom: 1px solid #d9d8eb;
     font-size: 10px;
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .profile-section {
@@ -372,7 +372,7 @@ body {
 
 .blob-animation {
     height: 48vh;
-    border-bottom: 1px solid #ceccde;
+    border-bottom: 1px solid #d9d8eb;
     overflow: hidden;
 }
 
@@ -408,7 +408,7 @@ body {
 .loading-text {
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
-    color: #ceccde;
+    color: #d9d8eb;
     margin-bottom: 10px;
 }
 
@@ -421,7 +421,7 @@ body {
 .loading-bar-section {
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
-    color: #ceccde;
+    color: #d9d8eb;
     white-space: nowrap;
 }
 
@@ -453,7 +453,7 @@ body {
 .rules-section {
     height: calc(56vh - 60px);
     overflow-y: auto;
-    border-top: 1px solid #ceccde;
+    border-top: 1px solid #d9d8eb;
 }
 
 .rules-content {
@@ -467,9 +467,9 @@ body {
 }
 
 .execute-btn, .refresh-btn {
-    background-color: #ceccde;
-    color: #1f1e28;
-    border: 1px solid #ceccde;
+    background-color: #d9d8eb;
+    color: #171a1d;
+    border: 1px solid #d9d8eb;
     padding: 5px 10px;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
@@ -478,24 +478,24 @@ body {
 }
 
 .refresh-btn {
-    background-color: #1f1e28;
-    color: #ceccde;
-    border: 1px solid #ceccde;
+    background-color: #171a1d;
+    color: #d9d8eb;
+    border: 1px solid #d9d8eb;
 }
 
 .execute-btn:hover, .refresh-btn:hover {
-    background-color: #1f1e28;
-    color: #ceccde;
+    background-color: #171a1d;
+    color: #d9d8eb;
 }
 
 .refresh-btn:hover {
-    background-color: #ceccde;
-    color: #1f1e28;
+    background-color: #d9d8eb;
+    color: #171a1d;
 }
 
 .result-section {
-    background-color: #1f1e28;
-    border: 1px solid #ceccde;
+    background-color: #171a1d;
+    border: 1px solid #d9d8eb;
     padding: 10px;
     margin-top: 10px;
     display: none;
@@ -515,11 +515,11 @@ body {
 }
 
 .feed-item.deposit {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .feed-item.withdraw {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .feed-item.boss {
@@ -544,7 +544,7 @@ body {
 
 /* Activity Item Styling - all white */
 .activity-item {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 /* Game Status Styling - removed active color override */
@@ -578,9 +578,9 @@ body {
 
 /* Attack Simulator Styling */
 .target-input {
-    background-color: #1f1e28;
-    border: 1px solid #ceccde;
-    color: #ceccde;
+    background-color: #171a1d;
+    border: 1px solid #d9d8eb;
+    color: #d9d8eb;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
     padding: 5px 10px;
@@ -601,7 +601,7 @@ body {
 /* Keep target label normal color when targeting */
 .detail-item.targeting-other,
 .detail-item.targeting-self {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 
@@ -617,9 +617,9 @@ body {
 }
 
 .type-btn {
-    background-color: #1f1e28;
-    border: 1px solid #ceccde;
-    color: #ceccde;
+    background-color: #171a1d;
+    border: 1px solid #d9d8eb;
+    color: #d9d8eb;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
     padding: 5px 10px;
@@ -632,19 +632,19 @@ body {
 }
 
 .type-btn.selected {
-    background-color: #ceccde;
-    color: #1f1e28;
+    background-color: #d9d8eb;
+    color: #171a1d;
 }
 
 .type-btn.attack.selected {
     background-color: #d42d17;
-    color: #ceccde;
+    color: #d9d8eb;
     border-color: #d42d17;
 }
 
 .type-btn.self-cast.selected {
     background-color: #875fff;
-    color: #ceccde;
+    color: #d9d8eb;
     border-color: #875fff;
 }
 
@@ -660,9 +660,9 @@ body {
 }
 
 .quickhack-btn {
-    background-color: #1f1e28;
-    border: 1px solid #ceccde;
-    color: #ceccde;
+    background-color: #171a1d;
+    border: 1px solid #d9d8eb;
+    color: #d9d8eb;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
     padding: 5px 10px;
@@ -675,12 +675,12 @@ body {
 }
 
 .quickhack-btn.selected {
-    background-color: #ceccde;
-    color: #1f1e28;
+    background-color: #d9d8eb;
+    color: #171a1d;
 }
 
 .target-balance {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .ram-value {
@@ -689,18 +689,18 @@ body {
 
 /* Override ram-value color for player profile section - should be white */
 .profile-content .ram-value {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 /* Override ram-value color for attack simulator estimated results - should be white */
 .attack-simulator .ram-value {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 /* Override ram-value color for game status/state in header - should be white */
 .header .header-item:nth-child(3) .ram-value,
 .header .header-item:nth-child(4) .ram-value {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .loading-container {
@@ -717,12 +717,12 @@ body {
 .loading-bar {
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
-    color: #ceccde;
+    color: #d9d8eb;
     white-space: nowrap;
 }
 
 .tx-link {
-    color: #ceccde;
+    color: #d9d8eb;
     text-decoration: underline;
     cursor: pointer;
     font-size: 10px;
@@ -737,17 +737,17 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    border-bottom: 1px solid #ceccde;
+    border-bottom: 1px solid #d9d8eb;
     font-weight: bold;
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .quickhack-attack {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .quickhack-self-cast {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 /* Clickable addresses in activity feed */
@@ -767,17 +767,17 @@ body {
     display: flex;
     width: 100%;
     height: 40px;
-    background-color: #1f1e28;
+    background-color: #171a1d;
     align-items: center;
     position: relative;
-    border-bottom: 1px solid #ceccde;
+    border-bottom: 1px solid #d9d8eb;
 }
 
 .tab-button {
     cursor: pointer;
     background-color: transparent;
     border: none;
-    color: #ceccde;
+    color: #d9d8eb;
     font-weight: bold;
     font-family: 'ProtoMono', 'Courier New', monospace;
     font-size: 10px;
@@ -791,7 +791,7 @@ body {
 }
 
 .tab-button.active {
-    color: #ceccde;
+    color: #d9d8eb;
 }
 
 .tab-container::after {
@@ -801,7 +801,7 @@ body {
     top: 0;
     bottom: 0;
     width: 1px;
-    background-color: #ceccde;
+    background-color: #d9d8eb;
     transform: translateX(-50%);
 }
 
@@ -833,16 +833,16 @@ body {
 }
 
 @keyframes flash-red {
-    0%, 100% { background-color: #1f1e28; }
+    0%, 100% { background-color: #171a1d; }
     50% { background-color: #ff6b6b33; }
 }
 
 @keyframes flash-blue {
-    0%, 100% { background-color: #1f1e28; }
+    0%, 100% { background-color: #171a1d; }
     50% { background-color: #45b7d133; }
 }
 
 @keyframes flash-teal {
-    0%, 100% { background-color: #1f1e28; }
+    0%, 100% { background-color: #171a1d; }
     50% { background-color: #4ecdc433; }
 }

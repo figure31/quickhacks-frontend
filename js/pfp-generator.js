@@ -56,7 +56,7 @@ function initializePFP() {
             canvas.style('left', '50%');
             canvas.style('transform', 'translateX(-50%)');
             
-            p.background('#1f1e28');
+            p.background('#171a1d');
             p.noStroke();
             generatePFPGlyph();
         }
@@ -78,12 +78,12 @@ function initializePFP() {
             topOffset -= adjustment;
             p.canvas.style.top = topOffset + 'px';
             
-            p.background('#1f1e28');
+            p.background('#171a1d');
             generatePFPGlyph();
         }
 
         p.draw = function() {
-            p.background('#1f1e28');
+            p.background('#171a1d');
             
             if (currentGlyph) {
                 p.push();
@@ -220,8 +220,8 @@ function initializePFP() {
                 switch(this.dominantColor) {
                     case 'purple': return '#875fff';
                     case 'red': return '#d42d17';
-                    case 'base': return '#ceccde';
-                    default: return '#ceccde';
+                    case 'base': return '#d9d8eb';
+                    default: return '#d9d8eb';
                 }
             }
             
@@ -440,7 +440,7 @@ function initializePFP() {
                         if (this.grid[i][j]) {
                             switch(this.colorGrid[i][j]) {
                                 case 'base':
-                                    p.fill('#ceccde');
+                                    p.fill('#d9d8eb');
                                     break;
                                 case 'purple':
                                     p.fill('#875fff');
@@ -449,7 +449,7 @@ function initializePFP() {
                                     p.fill('#d42d17');
                                     break;
                                 default:
-                                    p.fill('#ceccde');
+                                    p.fill('#d9d8eb');
                             }
                             
                             p.rect(Math.floor(startX + i * this.cellSize), 

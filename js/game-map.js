@@ -203,7 +203,7 @@ async function initializeGameMap() {
                 x: p.width / 2,
                 y: p.height / 2,
                 size: contractSize,
-                color: '#ceccde'
+                color: '#d9d8eb'
             };
             
             // Generate player nodes from independent map data
@@ -211,14 +211,14 @@ async function initializeGameMap() {
         }
         
         p.draw = function() {
-            p.background('#1f1e28');
+            p.background('#171a1d');
             
             // Draw connections first (behind nodes)
             drawConnections();
             
             // Draw contract node
-            p.fill('#1f1e28');
-            p.stroke('#ceccde');
+            p.fill('#171a1d');
+            p.stroke('#d9d8eb');
             p.strokeWeight(1);
             p.rect(contractNode.x - contractNode.size/2, contractNode.y - contractNode.size/2, 
                    contractNode.size, contractNode.size);
@@ -247,8 +247,8 @@ async function initializeGameMap() {
                     
                     if (isBossOrTeam && !isTargetedPlayer) {
                         // Draw like central node: background fill + white outline (only when not targeted)
-                        p.fill('#1f1e28');
-                        p.stroke('#ceccde');
+                        p.fill('#171a1d');
+                        p.stroke('#d9d8eb');
                         p.strokeWeight(1);
                         p.rect(player.x - player.size/2, player.y - player.size/2, 
                                player.size, player.size);
@@ -312,7 +312,7 @@ async function initializeGameMap() {
             
             playersToDisplay.forEach((player, index) => {
                 // All player nodes are now white
-                let playerColor = '#ceccde'; // White color for all players
+                let playerColor = '#d9d8eb'; // White color for all players
                 
                 // Spread players across canvas with more horizontal distribution
                 let x, y;
@@ -377,7 +377,7 @@ async function initializeGameMap() {
         
         function drawCircuitConnection(x1, y1, x2, y2) {
             // Set stroke for lines
-            p.stroke('#ceccde');
+            p.stroke('#d9d8eb');
             p.strokeWeight(1);
             
             // Create more complex circuit-style path like in the sketch
