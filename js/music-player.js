@@ -8,6 +8,7 @@ const MusicPlayer = {
     isPlaying: false,
     isShuffled: false,
     shuffledPlaylist: [],
+    shuffleIndex: 0,
     volume: 0.3,
     initialized: false,
     
@@ -29,17 +30,45 @@ const MusicPlayer = {
             { artist: 'Actress', title: 'UNTITLED 7', file: './songs/Actress_UNTITLED 7.mp3' },
             { artist: 'Alva Noto', title: 'HYbrID Sync Dark', file: './songs/Alva Noto - HYbrID Sync Dark.mp3' },
             { artist: 'Alva Noto', title: 'HYbrID Rehuman', file: './songs/Alva Noto_HYbrID Rehuman.mp3' },
+            { artist: 'Andy Stott', title: 'Bad Wires', file: './songs/Andy Stott_Bad Wires.mp3' },
+            { artist: 'Andy Stott', title: 'We Stay Together', file: './songs/Andy Stott_We Stay Together.mp3' },
+            { artist: 'Aphex Twin', title: 'Hedphelym', file: './songs/Aphex Twin _Hedphelym.mp3' },
+            { artist: 'Aphex Twin', title: 'Boxing Day', file: './songs/Aphex Twin_ Boxing Day.mp3' },
+            { artist: 'Aphex Twin', title: 'Alberto Balsalm', file: './songs/Aphex Twin_Alberto Balsalm.mp3' },
+            { artist: 'Aphex Twin', title: 'Cilonen', file: './songs/Aphex Twin_Cilonen.mp3' },
+            { artist: 'Aphex Twin', title: 'Pwsteal.Ldpinch.D', file: './songs/Aphex Twin_Pwsteal.Ldpinch.D.mp3' },
+            { artist: 'Aphex Twin', title: 'We are the music makers', file: './songs/Aphex Twin_We are the music makers.mp3' },
             { artist: 'Autechre', title: 'Flutter', file: './songs/Autechre_Flutter.mp3' },
             { artist: 'Autechre', title: 'Rae', file: './songs/Autechre_Rae.mp3' },
+            { artist: 'Bass Clef', title: 'neon-joy threads', file: './songs/Bass Clef_neon-joy threads.mp3' },
+            { artist: 'Bass Clef', title: 'press f5 deep home', file: './songs/Bass Clef_press f5 deep home.mp3' },
+            { artist: 'Burial', title: 'Etched Headplate', file: './songs/Burial_Etched Headplate.mp3' },
             { artist: 'Burial', title: 'Phoneglow', file: './songs/Burial_Phoneglow.mp3' },
+            { artist: 'Burial', title: 'Southern Comfort', file: './songs/Burial_Southern Comfort.mp3' },
+            { artist: 'Burial', title: 'Stolen Dog', file: './songs/Burial_Stolen Dog.mp3' },
+            { artist: 'Caterina Barbieri', title: 'Bow of Perception', file: './songs/Caterina Barbieri_Bow of Perception.mp3' },
+            { artist: 'Caterina Barbieri', title: 'INTCAEB', file: './songs/Caterina Barbieri_INTCAEB.mp3' },
+            { artist: 'Caterina Barbieri', title: 'This Causes Consciousness to Fracture', file: './songs/Caterina Barbieri_This Causes Consciousness to Fracture.mp3' },
+            { artist: 'Christoph De Babalon', title: 'Opium', file: './songs/Christoph De Babalon_Opium.mp3' },
+            { artist: 'Esoterik', title: 'Mayhem', file: './songs/Esoterik_Mayhem.mp3' },
             { artist: 'Hardfloor', title: 'Lost In The Silverbox', file: './songs/Hardfloor_Lost In The Silverbox.mp3' },
             { artist: 'Kode9', title: 'Eyes Go Blank', file: './songs/Kode9_Eyes Go Blank.mp3' },
+            { artist: 'Mica Levi', title: 'Delete Beach', file: './songs/Mica Levi_Delete Beach.mp3' },
             { artist: 'Pinch', title: 'Gangstaz', file: './songs/Pinch_Gangstaz.mp3' },
-            { artist: 'Plastikman', title: 'Plasticity', file: './songs/Plastikman_Plasticity.mp3' }
+            { artist: 'Plastikman', title: 'Consumed', file: './songs/Plastikman_Consumed.mp3' },
+            { artist: 'Plastikman', title: 'Locomotion', file: './songs/Plastikman_Locomotion.mp3' },
+            { artist: 'Plastikman', title: 'Plasticity', file: './songs/Plastikman_Plasticity.mp3' },
+            { artist: 'Ryoji Ikeda', title: 'data.matrix', file: './songs/Ryoji Ikeda_data.matrix.mp3' },
+            { artist: 'TIM HECKER', title: 'Radiance', file: './songs/TIM HECKER_Radiance.mp3' },
+            { artist: 'TIM HECKER', title: 'Stab Variation', file: './songs/TIM HECKER_Stab Variation.mp3' },
+            { artist: 'Vessel', title: 'Punish, Honey', file: './songs/Vessel_Punish, Honey.mp3' }
         ];
         
         // Always start with a random song on page load
         this.currentIndex = Math.floor(Math.random() * this.songs.length);
+        
+        // Initialize shuffled playlist
+        this.generateShuffledPlaylist();
         
         // Create audio element
         this.audio = new Audio();
@@ -144,8 +173,9 @@ const MusicPlayer = {
         if (this.songs.length === 0) return;
         
         if (this.isShuffled) {
-            // Pick a completely random song
-            this.currentIndex = Math.floor(Math.random() * this.songs.length);
+            // Move to next song in shuffled playlist
+            this.shuffleIndex = (this.shuffleIndex + 1) % this.shuffledPlaylist.length;
+            this.currentIndex = this.shuffledPlaylist[this.shuffleIndex];
         } else {
             // Follow ordered list
             this.currentIndex = (this.currentIndex + 1) % this.songs.length;
@@ -164,8 +194,9 @@ const MusicPlayer = {
         if (this.songs.length === 0) return;
         
         if (this.isShuffled) {
-            // Pick a completely random song
-            this.currentIndex = Math.floor(Math.random() * this.songs.length);
+            // Move to previous song in shuffled playlist
+            this.shuffleIndex = this.shuffleIndex === 0 ? this.shuffledPlaylist.length - 1 : this.shuffleIndex - 1;
+            this.currentIndex = this.shuffledPlaylist[this.shuffleIndex];
         } else {
             // Follow ordered list backwards
             this.currentIndex = this.currentIndex === 0 ? this.songs.length - 1 : this.currentIndex - 1;
@@ -182,8 +213,30 @@ const MusicPlayer = {
     // Toggle shuffle mode
     toggleShuffle() {
         this.isShuffled = !this.isShuffled;
+        
+        if (this.isShuffled) {
+            // Generate new shuffled playlist and find current song position
+            this.generateShuffledPlaylist();
+            this.shuffleIndex = this.shuffledPlaylist.indexOf(this.currentIndex);
+            if (this.shuffleIndex === -1) this.shuffleIndex = 0;
+        }
+        
         this.updateDisplay();
         console.log('Shuffle mode:', this.isShuffled ? 'ON' : 'OFF');
+    },
+    
+    // Generate a shuffled playlist that goes through all songs once
+    generateShuffledPlaylist() {
+        // Create array of indices
+        this.shuffledPlaylist = [...Array(this.songs.length).keys()];
+        
+        // Fisher-Yates shuffle algorithm
+        for (let i = this.shuffledPlaylist.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.shuffledPlaylist[i], this.shuffledPlaylist[j]] = [this.shuffledPlaylist[j], this.shuffledPlaylist[i]];
+        }
+        
+        this.shuffleIndex = 0;
     },
     
     // Shuffle array in place
