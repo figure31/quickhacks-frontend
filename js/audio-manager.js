@@ -23,7 +23,10 @@ const AudioManager = {
             withdrawal: new Audio('./sounds/withdrawal.mp3'),
             execute_quickhack: new Audio('./sounds/execute_quickhack.mp3'),
             quickhack_success: new Audio('./sounds/quickhack_success.mp3'),
-            quickhack_fail: new Audio('./sounds/quickhack_fail.mp3')
+            quickhack_fail: new Audio('./sounds/quickhack_fail.mp3'),
+            page_refresh: new Audio('./sounds/page_refresh.mp3'),
+            refresh: new Audio('./sounds/refresh.mp3'),
+            self_cast: new Audio('./sounds/self_cast.mp3')
         };
         
         // Configure all audio objects
@@ -121,6 +124,7 @@ const AudioManager = {
 // Initialize audio system when page loads
 document.addEventListener('DOMContentLoaded', () => {
     AudioManager.init();
+    
 });
 
 // Unlock audio on first user interaction

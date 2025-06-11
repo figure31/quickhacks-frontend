@@ -98,9 +98,9 @@ async function fetchMapPlayers() {
 /**
  * Refresh game map manually by fetching new data and updating display
  */
-async function refreshGameMap() {
-    if (typeof AudioManager !== 'undefined') {
-        AudioManager.play('click');
+async function refreshGameMap(silent = false) {
+    if (!silent && typeof AudioManager !== 'undefined') {
+        AudioManager.play('refresh');
     }
     mapPlayerData = await fetchMapPlayers();
     if (mapP5Instance && mapP5Instance.updateMapPlayers) {

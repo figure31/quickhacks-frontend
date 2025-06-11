@@ -472,9 +472,9 @@ function initializePFP() {
 /**
  * Generate a new random PFP with a random seed and color
  */
-function regeneratePFP() {
-    if (typeof AudioManager !== 'undefined') {
-        AudioManager.play('click');
+function regeneratePFP(silent = false) {
+    if (!silent && typeof AudioManager !== 'undefined') {
+        AudioManager.play('refresh');
     }
     let seedNumber = Math.floor(Math.random() * 900000) + 100000; // 6-digit
     let colorLetter = 'W'; // Always use white

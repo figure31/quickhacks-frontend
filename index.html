@@ -1039,9 +1039,13 @@
             
             if (playerData) {
                 console.log('Using real data, balance:', playerData.currentBalance);
+                // Cache player data for withdrawal cooldown checks
+                window.cachedPlayerData = playerData;
                 await populateProfileWithRealData(playerData);
             } else {
                 console.log('No player data found, using defaults');
+                // Clear cached data if no player found
+                window.cachedPlayerData = null;
                 populateProfileWithNoData();
             }
         }
@@ -1272,7 +1276,7 @@
             
             // Refresh game map to highlight connected player
             if (typeof refreshGameMap === 'function') {
-                refreshGameMap();
+                refreshGameMap(true); // Silent refresh to avoid sound on wallet connection
             }
             
             // Update target input styling in case there's already a target
@@ -1324,7 +1328,7 @@
             
             // Refresh game map to remove player highlighting
             if (typeof refreshGameMap === 'function') {
-                refreshGameMap();
+                refreshGameMap(true); // Silent refresh to avoid sound on wallet disconnection
             }
             
             // Update target input styling since no wallet is connected
@@ -1342,8 +1346,8 @@
                 AudioManager.play('disconnect');
                 setDisconnectedState();
             } else {
-                // Connect wallet
-                AudioManager.play('connect');
+                // Connect wallet - play welcome sound
+                AudioManager.play('page_refresh');
                 await connectWallet();
             }
         }
@@ -1380,6 +1384,7 @@
                 const statusDiv = document.getElementById('transactionStatus');
                 statusDiv.innerHTML = `✅ deposit successful: <a href="https://sepolia.basescan.org/tx/${tx.transactionHash}" target="_blank" style="color: #ceccde; text-decoration: underline;">${tx.transactionHash.slice(0, 10)}...${tx.transactionHash.slice(-8)}</a>`;
                 statusDiv.style.display = 'block';
+                statusDiv.style.color = '#d9d8eb'; // Reset to normal color
                 
                 // Play success sound
                 AudioManager.play('deposit');
@@ -1430,6 +1435,7 @@
                 const statusDiv = document.getElementById('transactionStatus');
                 statusDiv.innerHTML = `✅ withdrawal successful: <a href="https://sepolia.basescan.org/tx/${tx.transactionHash}" target="_blank" style="color: #ceccde; text-decoration: underline;">${tx.transactionHash.slice(0, 10)}...${tx.transactionHash.slice(-8)}</a>`;
                 statusDiv.style.display = 'block';
+                statusDiv.style.color = '#d9d8eb'; // Reset to normal color
                 
                 // Play success sound
                 AudioManager.play('withdrawal');
@@ -1446,7 +1452,38 @@
                 
             } catch (error) {
                 console.error('Withdrawal failed:', error);
-                alert(`Withdrawal failed: ${error.message || 'Unknown error'}`);
+                
+                // Check if failure is due to withdrawal cooldown
+                let failureMessage = 'Withdrawal failed: ';
+                
+                try {
+                    // Get current player data to check cooldown
+                    const web3 = new Web3(window.ethereum);
+                    const currentBlockNumber = await web3.eth.getBlockNumber();
+                    
+                    // If we have cached player data, check cooldown
+                    if (window.cachedPlayerData && window.cachedPlayerData.lastDepositBlock) {
+                        const cooldownEndBlock = parseInt(window.cachedPlayerData.lastDepositBlock) + 900;
+                        
+                        if (currentBlockNumber < cooldownEndBlock) {
+                            const blocksRemaining = cooldownEndBlock - currentBlockNumber;
+                            failureMessage = `Withdrawal failed: cooldown active. ${blocksRemaining} blocks remaining (ends at block ${cooldownEndBlock.toLocaleString()})`;
+                        } else {
+                            failureMessage += (error.message || 'Unknown error');
+                        }
+                    } else {
+                        failureMessage += (error.message || 'Unknown error');
+                    }
+                } catch (cooldownError) {
+                    // If cooldown check fails, just show the original error
+                    failureMessage += (error.message || 'Unknown error');
+                }
+                
+                // Show error message in transaction status instead of alert
+                const statusDiv = document.getElementById('transactionStatus');
+                statusDiv.innerHTML = `❌ ${failureMessage}`;
+                statusDiv.style.display = 'block';
+                statusDiv.style.color = '#ff6b6b';
             }
         }
         
@@ -1533,6 +1570,25 @@
                     alert('Cannot attack yourself. Use self-cast quickhacks instead.');
                     return;
                 }
+                
+                // Check if targeting team treasury
+                const teamAddress = '0xd63a12d5dd3bccc018735eaebb70a51ed351b56e';
+                if (targetAddress.toLowerCase() === teamAddress.toLowerCase()) {
+                    // Show error in result section instead of alert
+                    const resultSection = document.getElementById('resultSection');
+                    const results = resultSection.querySelectorAll('.detail-item');
+                    
+                    if (results[0]) {
+                        results[0].innerHTML = '<span class="result-failure">[team treasury cannot be attacked]</span>';
+                    }
+                    if (results[1]) results[1].textContent = '';
+                    if (results[2]) results[2].textContent = '';
+                    if (results[3]) results[3].textContent = '';
+                    if (results[4]) results[4].textContent = '';
+                    
+                    resultSection.classList.add('show');
+                    return;
+                }
             }
             
             // Validate for self-cast (should target own address)
@@ -1612,7 +1668,8 @@
                 if (damageAmount !== null && costAmount !== null) {
                     const formattedDamage = parseInt(damageAmount).toLocaleString();
                     const formattedCost = parseInt(costAmount).toLocaleString();
-                    resultsText = `damage ${formattedDamage} RAM | cost ${formattedCost} RAM | block ${blockNumber}`;
+                    const colorClass = currentQuickhackType === 'attack' ? 'quickhack-attack' : 'quickhack-self-cast';
+                    resultsText = `damage <span class="${colorClass}">${formattedDamage} RAM</span> | cost <span class="${colorClass}">${formattedCost} RAM</span> | block ${blockNumber}`;
                 } else {
                     resultsText = 'events update in ~1 minute, see tx logs for damages/costs';
                 }
@@ -1623,8 +1680,12 @@
                 results[3].innerHTML = resultsText;
                 results[4].innerHTML = '';
                 
-                // Play success sound
-                AudioManager.play('quickhack_success');
+                // Play success sound - different for attacks vs self-casts
+                if (currentQuickhackType === 'self-cast') {
+                    AudioManager.play('self_cast');
+                } else {
+                    AudioManager.play('quickhack_success');
+                }
                 
                 // Note: Activity will appear in feed once subgraph syncs (~2 minutes)
                 
@@ -2090,6 +2151,20 @@
             // Validate address format
             if (!targetAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
                 alert('Please enter a valid Ethereum address (0x...)');
+                return;
+            }
+            
+            // Check if targeting team treasury
+            const teamAddress = '0xd63a12d5dd3bccc018735eaebb70a51ed351b56e';
+            if (targetAddress === teamAddress.toLowerCase()) {
+                // Show clean error message in estimated results section by finding the parent of estimatedDamage
+                const estimatedDamageElement = document.getElementById('estimatedDamage');
+                if (estimatedDamageElement) {
+                    const parentDetailItem = estimatedDamageElement.closest('.detail-item');
+                    if (parentDetailItem) {
+                        parentDetailItem.innerHTML = '[team treasury cannot be attacked]';
+                    }
+                }
                 return;
             }
             
@@ -2708,11 +2783,23 @@
                     const params = QUICKHACK_PARAMS[selectedQuickhackType];
                     
                     if (isTargetingSelf && !params.selfCastOnly) {
-                        // Attack quickhack on self
-                        updateEstimatedResults("[don't hack yourself]", "[don't hack yourself]");
+                        // Attack quickhack on self - show clean error message
+                        const estimatedDamageElement = document.getElementById('estimatedDamage');
+                        if (estimatedDamageElement) {
+                            const parentDetailItem = estimatedDamageElement.closest('.detail-item');
+                            if (parentDetailItem) {
+                                parentDetailItem.innerHTML = "[don't hack yourself]";
+                            }
+                        }
                     } else if (!isTargetingSelf && params.selfCastOnly) {
-                        // Self-cast on enemy
-                        updateEstimatedResults("[cannot use self-cast on enemy]", "[cannot use self-cast on enemy]");
+                        // Self-cast on enemy - show clean error message
+                        const estimatedDamageElement = document.getElementById('estimatedDamage');
+                        if (estimatedDamageElement) {
+                            const parentDetailItem = estimatedDamageElement.closest('.detail-item');
+                            if (parentDetailItem) {
+                                parentDetailItem.innerHTML = '[cannot use self-cast on enemy]';
+                            }
+                        }
                     }
                     return;
                 }
@@ -3004,11 +3091,23 @@
                     const params = QUICKHACK_PARAMS[selectedQuickhackType];
                     
                     if (isTargetingSelf && !params.selfCastOnly) {
-                        // Attack quickhack on self
-                        updateEstimatedResults("[don't hack yourself]", "[don't hack yourself]");
+                        // Attack quickhack on self - show clean error message
+                        const estimatedDamageElement = document.getElementById('estimatedDamage');
+                        if (estimatedDamageElement) {
+                            const parentDetailItem = estimatedDamageElement.closest('.detail-item');
+                            if (parentDetailItem) {
+                                parentDetailItem.innerHTML = "[don't hack yourself]";
+                            }
+                        }
                     } else if (!isTargetingSelf && params.selfCastOnly) {
-                        // Self-cast on enemy
-                        updateEstimatedResults("[cannot use self-cast on enemy]", "[cannot use self-cast on enemy]");
+                        // Self-cast on enemy - show clean error message
+                        const estimatedDamageElement = document.getElementById('estimatedDamage');
+                        if (estimatedDamageElement) {
+                            const parentDetailItem = estimatedDamageElement.closest('.detail-item');
+                            if (parentDetailItem) {
+                                parentDetailItem.innerHTML = '[cannot use self-cast on enemy]';
+                            }
+                        }
                     }
                     return;
                 }

@@ -409,7 +409,7 @@ body {
 }
 
 .attack-simulator {
-    height: calc(60vh - 60px);
+    height: calc(70vh - 60px);
     overflow-y: auto;
 }
 
@@ -794,11 +794,11 @@ body {
 }
 
 .quickhack-attack {
-    color: #d9d8eb;
+    color: #d42d17;
 }
 
 .quickhack-self-cast {
-    color: #d9d8eb;
+    color: #875fff;
 }
 
 /* Clickable addresses in activity feed */
