@@ -39,6 +39,57 @@ body {
     margin: 5px 10px;
 }
 
+.music-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.music-buttons {
+    display: flex;
+    gap: 2px;
+}
+
+.music-buttons button {
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.music-buttons button:hover {
+    background-color: rgba(217, 216, 235, 0.1);
+}
+
+/* Track display in header */
+.track-display {
+    width: 80px;
+    height: 20px;
+    overflow: hidden;
+    margin-left: 4px;
+    position: relative;
+}
+
+.track-display span {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 10px;
+    color: #d9d8eb;
+    line-height: 20px;
+    padding: 0 2px;
+    animation: scroll-header-text 6s linear infinite;
+}
+
+/* Header scrolling animation - right to left */
+@keyframes scroll-header-text {
+    0% { transform: translateX(80px); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Bottom scrolling text animation */
+@keyframes scroll-text {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
 .header-label {
     color: #d9d8eb;
 }
