@@ -99,6 +99,9 @@ async function fetchMapPlayers() {
  * Refresh game map manually by fetching new data and updating display
  */
 async function refreshGameMap() {
+    if (typeof AudioManager !== 'undefined') {
+        AudioManager.play('click');
+    }
     mapPlayerData = await fetchMapPlayers();
     if (mapP5Instance && mapP5Instance.updateMapPlayers) {
         mapP5Instance.updateMapPlayers();
@@ -110,6 +113,9 @@ async function refreshGameMap() {
  * @param {string} address - The address to highlight, or null to clear
  */
 function setTargetedAddress(address) {
+    if (typeof AudioManager !== 'undefined') {
+        AudioManager.play('address_target');
+    }
     targetedAddress = address ? address.toLowerCase() : null;
     // Just redraw without regenerating positions (no need to call updateMapPlayers)
     // The draw loop will automatically use the new targetedAddress value
@@ -127,11 +133,11 @@ function setTargetedAddress(address) {
             targetInput.value = randomBinary;
         }, 150); // Change every 150ms
         
-        // After 800ms, show the actual new address
+        // After 600ms, show the actual new address
         setTimeout(() => {
             clearInterval(binaryInterval);
             targetInput.value = address;
-        }, 800);
+        }, 600);
     }
     
     // Update target input styling based on whether targeting other player

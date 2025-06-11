@@ -473,6 +473,9 @@ function initializePFP() {
  * Generate a new random PFP with a random seed and color
  */
 function regeneratePFP() {
+    if (typeof AudioManager !== 'undefined') {
+        AudioManager.play('click');
+    }
     let seedNumber = Math.floor(Math.random() * 900000) + 100000; // 6-digit
     let colorLetter = 'W'; // Always use white
     currentPFPSeed = `${seedNumber}-0-${colorLetter}`;
@@ -491,6 +494,9 @@ function regeneratePFP() {
  * Rotate the current PFP by 90 degrees
  */
 function rotatePFP() {
+    if (typeof AudioManager !== 'undefined') {
+        AudioManager.play('click');
+    }
     window.rotatePFPGlyph();
     // Update the seed with new rotation
     let parts = currentPFPSeed.split('-');

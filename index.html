@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
     <script src="./js/pfp-generator.js"></script>
     <script src="./js/game-map.js"></script>
+    <script src="./js/audio-manager.js"></script>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
@@ -39,6 +40,10 @@
         <div class="header-item">
             <span class="header-label">gas</span>
             <span class="header-value" id="gasPrice">loading...</span>
+        </div>
+        <div class="header-item">
+            <span class="header-label">audio</span>
+            <button id="audioToggle" onclick="toggleAudio()" style="background: none; border: 1px solid #bd93f9; color: #bd93f9; padding: 2px 6px; font-size: 8px; cursor: pointer;">ON</button>
         </div>
     </div>
 
@@ -388,6 +393,7 @@
 
                     // Add active class to clicked button
                     this.classList.add('active');
+                    AudioManager.play('click');
 
                     // Show corresponding content
                     const targetContent = document.getElementById(targetTab + '-content');
@@ -749,8 +755,18 @@
 
         // Toggle player details
         function togglePlayer(index) {
+            AudioManager.play('click');
             const details = document.getElementById(`player-${index}`);
             details.classList.toggle('expanded');
+        }
+        
+        // Toggle audio on/off
+        function toggleAudio() {
+            const isEnabled = AudioManager.toggle();
+            const button = document.getElementById('audioToggle');
+            button.textContent = isEnabled ? 'ON' : 'OFF';
+            button.style.color = isEnabled ? '#bd93f9' : '#ff5555';
+            button.style.borderColor = isEnabled ? '#bd93f9' : '#ff5555';
         }
 
         // Quickhack selection functions
@@ -771,6 +787,7 @@
         };
         
         function selectQuickhackType(type) {
+            AudioManager.play('click');
             currentQuickhackType = type;
             
             // Update button states
@@ -799,6 +816,7 @@
         }
         
         function selectQuickhack(quickhack) {
+            AudioManager.play('click');
             currentQuickhack = quickhack;
             
             console.log('selectQuickhack called with:', quickhack);
@@ -1310,14 +1328,17 @@
         async function togglePlayerConnection() {
             if (isPlayerConnected) {
                 // Disconnect wallet
+                AudioManager.play('disconnect');
                 setDisconnectedState();
             } else {
                 // Connect wallet
+                AudioManager.play('connect');
                 await connectWallet();
             }
         }
 
         async function executeDeposit() {
+            AudioManager.play('execute_quickhack');
             const amount = document.getElementById('depositAmount').value;
             if (!amount || parseFloat(amount) <= 0) {
                 alert('Please enter a valid deposit amount');
@@ -1349,6 +1370,9 @@
                 statusDiv.innerHTML = `✅ deposit successful: <a href="https://sepolia.basescan.org/tx/${tx.transactionHash}" target="_blank" style="color: #ceccde; text-decoration: underline;">${tx.transactionHash.slice(0, 10)}...${tx.transactionHash.slice(-8)}</a>`;
                 statusDiv.style.display = 'block';
                 
+                // Play success sound
+                AudioManager.play('deposit');
+                
                 // Clear input and schedule player data refresh
                 document.getElementById('depositAmount').value = '';
                 
@@ -1366,6 +1390,7 @@
         }
 
         async function executeWithdraw() {
+            AudioManager.play('execute_quickhack');
             const amount = document.getElementById('withdrawAmount').value;
             if (!amount || parseInt(amount) <= 0) {
                 alert('Please enter a valid withdrawal amount');
@@ -1394,6 +1419,9 @@
                 const statusDiv = document.getElementById('transactionStatus');
                 statusDiv.innerHTML = `✅ withdrawal successful: <a href="https://sepolia.basescan.org/tx/${tx.transactionHash}" target="_blank" style="color: #ceccde; text-decoration: underline;">${tx.transactionHash.slice(0, 10)}...${tx.transactionHash.slice(-8)}</a>`;
                 statusDiv.style.display = 'block';
+                
+                // Play success sound
+                AudioManager.play('withdrawal');
                 
                 // Clear input and schedule player data refresh
                 document.getElementById('withdrawAmount').value = '';
@@ -1463,6 +1491,7 @@
         
         // Execute quickhack with real contract interaction
         async function executeAttack() {
+            AudioManager.play('execute_quickhack');
             const resultSection = document.getElementById('resultSection');
             const button = document.querySelector('.execute-btn');
             const loadingContainer = document.getElementById('loadingContainer');
@@ -1583,6 +1612,9 @@
                 results[3].innerHTML = resultsText;
                 results[4].innerHTML = '';
                 
+                // Play success sound
+                AudioManager.play('quickhack_success');
+                
                 // Note: Activity will appear in feed once subgraph syncs (~2 minutes)
                 
                 resultSection.classList.add('show');
@@ -1680,6 +1712,9 @@
                 results[1].innerHTML = txHash ? `<a href="https://sepolia.basescan.org/tx/${txHash}" target="_blank" style="color: #ceccde; text-decoration: underline;">${txHash.slice(0, 10)}...${txHash.slice(-8)}</a>` : 'no transaction sent';
                 results[2].innerHTML = `<span style="color: #ff5555;">${userFriendlyMessage}</span>`;
                 results[3].textContent = '';
+                
+                // Play failure sound
+                AudioManager.play('quickhack_fail');
                 results[4].textContent = '';
                 
                 resultSection.classList.add('show');
@@ -2032,6 +2067,7 @@
 
         // Function to refresh target data for attack simulator
         async function refreshTargetData() {
+            AudioManager.play('click');
             const targetInput = document.getElementById('targetAddressInput');
             const targetAddress = targetInput.value.trim().toLowerCase();
             
