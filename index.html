@@ -807,6 +807,43 @@
             });
             document.querySelector(`.type-btn.${type}`).classList.add('selected');
             
+            // Clear any error messages that may have replaced the normal estimated results structure
+            // This ensures error messages from refresh target don't persist when switching quickhack types
+            const estimatedDamageElement = document.getElementById('estimatedDamage');
+            let estimatedResultsItem = null;
+            
+            if (estimatedDamageElement) {
+                estimatedResultsItem = estimatedDamageElement.closest('.detail-item');
+            } else {
+                // If estimatedDamage element doesn't exist, find the detail-item that contains error messages
+                const detailItems = document.querySelectorAll('.detail-item');
+                for (const item of detailItems) {
+                    if (item.innerHTML.includes('[cannot use self-cast on enemy]') ||
+                        item.innerHTML.includes('[team treasury cannot be attacked]')) {
+                        estimatedResultsItem = item;
+                        break;
+                    }
+                }
+            }
+            
+            if (estimatedResultsItem && (estimatedResultsItem.innerHTML.includes('[cannot use self-cast on enemy]') ||
+                estimatedResultsItem.innerHTML.includes('[team treasury cannot be attacked]'))) {
+                // Restore the normal estimated results structure with default slots value
+                estimatedResultsItem.innerHTML = 'damages <span class="ram-value" id="estimatedDamage">[connect]</span> | costs <span class="ram-value" id="estimatedCost">[connect]</span> | slots used <span id="slotsUsedValue">[1]</span>';
+            }
+            
+            // Also clear any error messages from the result section
+            const resultSection = document.getElementById('resultSection');
+            if (resultSection && resultSection.classList.contains('show')) {
+                const resultItems = resultSection.querySelectorAll('.detail-item');
+                for (const item of resultItems) {
+                    if (item.innerHTML.includes('[team treasury cannot be attacked]')) {
+                        resultSection.classList.remove('show');
+                        break;
+                    }
+                }
+            }
+            
             // Show/hide options
             document.getElementById('attackOptions').classList.remove('show');
             document.getElementById('selfCastOptions').classList.remove('show');
@@ -845,9 +882,49 @@
                 }
             });
             
-            // Update slots used display
+            // Clear any error messages that may have replaced the normal estimated results structure
+            // This ensures error messages from refresh target don't persist when switching quickhacks
+            const estimatedDamageElement = document.getElementById('estimatedDamage');
+            let estimatedResultsItem = null;
+            
+            if (estimatedDamageElement) {
+                estimatedResultsItem = estimatedDamageElement.closest('.detail-item');
+            } else {
+                // If estimatedDamage element doesn't exist, find the detail-item that contains error messages
+                const detailItems = document.querySelectorAll('.detail-item');
+                for (const item of detailItems) {
+                    if (item.innerHTML.includes('[cannot use self-cast on enemy]') ||
+                        item.innerHTML.includes('[team treasury cannot be attacked]')) {
+                        estimatedResultsItem = item;
+                        break;
+                    }
+                }
+            }
+            
+            if (estimatedResultsItem && (estimatedResultsItem.innerHTML.includes('[cannot use self-cast on enemy]') ||
+                estimatedResultsItem.innerHTML.includes('[team treasury cannot be attacked]'))) {
+                // Restore the normal estimated results structure
+                estimatedResultsItem.innerHTML = 'damages <span class="ram-value" id="estimatedDamage">[connect]</span> | costs <span class="ram-value" id="estimatedCost">[connect]</span> | slots used <span id="slotsUsedValue">[1]</span>';
+            }
+            
+            // Also clear any error messages from the result section
+            const resultSection = document.getElementById('resultSection');
+            if (resultSection && resultSection.classList.contains('show')) {
+                const resultItems = resultSection.querySelectorAll('.detail-item');
+                for (const item of resultItems) {
+                    if (item.innerHTML.includes('[team treasury cannot be attacked]')) {
+                        resultSection.classList.remove('show');
+                        break;
+                    }
+                }
+            }
+            
+            // Update slots used display (after ensuring the element exists)
             const slotsUsed = quickhackSlots[quickhack] || 0;
-            document.getElementById('slotsUsedValue').textContent = `[${slotsUsed}]`;
+            const slotsElement = document.getElementById('slotsUsedValue');
+            if (slotsElement) {
+                slotsElement.textContent = `[${slotsUsed}]`;
+            }
             
             // Update estimated results based on selected quickhack if we have data
             if (connectedWalletAddress && attackerData && targetData) {
@@ -2140,6 +2217,44 @@
         // Function to refresh target data for attack simulator
         async function refreshTargetData() {
             AudioManager.play('click');
+            
+            // Clear any previous error messages before processing new target
+            // Clear estimated results section errors
+            const estimatedDamageElement = document.getElementById('estimatedDamage');
+            let estimatedResultsItem = null;
+            
+            if (estimatedDamageElement) {
+                estimatedResultsItem = estimatedDamageElement.closest('.detail-item');
+            } else {
+                // If estimatedDamage element doesn't exist, find the detail-item that contains error messages
+                const detailItems = document.querySelectorAll('.detail-item');
+                for (const item of detailItems) {
+                    if (item.innerHTML.includes('[cannot use self-cast on enemy]') ||
+                        item.innerHTML.includes('[team treasury cannot be attacked]')) {
+                        estimatedResultsItem = item;
+                        break;
+                    }
+                }
+            }
+            
+            if (estimatedResultsItem && (estimatedResultsItem.innerHTML.includes('[cannot use self-cast on enemy]') ||
+                estimatedResultsItem.innerHTML.includes('[team treasury cannot be attacked]'))) {
+                // Restore the normal estimated results structure
+                estimatedResultsItem.innerHTML = 'damages <span class="ram-value" id="estimatedDamage">[connect]</span> | costs <span class="ram-value" id="estimatedCost">[connect]</span> | slots used <span id="slotsUsedValue">[1]</span>';
+            }
+            
+            // Clear result section errors
+            const resultSection = document.getElementById('resultSection');
+            if (resultSection && resultSection.classList.contains('show')) {
+                const resultItems = resultSection.querySelectorAll('.detail-item');
+                for (const item of resultItems) {
+                    if (item.innerHTML.includes('[team treasury cannot be attacked]')) {
+                        resultSection.classList.remove('show');
+                        break;
+                    }
+                }
+            }
+            
             const targetInput = document.getElementById('targetAddressInput');
             const targetAddress = targetInput.value.trim().toLowerCase();
             

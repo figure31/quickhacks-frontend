@@ -14,6 +14,7 @@ let animationFrames = [];
 let mapPlayerData = []; // Independent map player data
 let targetedAddress = null; // Address currently selected as target
 let activeAnimations = []; // Array to track ongoing pulse animations
+let animationCounter = 0; // Counter to stagger multiple animations
 
 /**
  * Fetch players specifically for map visualization
@@ -310,10 +311,14 @@ function startAttackAnimation(attackerAddr, targetAddr) {
     // Combine them
     const completePath = [...attackerToCenter, ...centerToTarget];
     
+    // Stagger multiple animations with a small delay to make them visible as separate pulses
+    const delayOffset = animationCounter * 400; // 400ms delay between pulses
+    animationCounter++;
+    
     const animation = new PulseAnimation(
         completePath,
         'attack',
-        Date.now(),
+        Date.now() + delayOffset,
         attackerAddr,
         targetAddr
     );
@@ -329,15 +334,24 @@ function startSelfCastAnimation(playerAddr) {
     
     if (!playerPos || !contractNode) return;
     
-    // Calculate path once using exact same coordinates as line drawing
-    const pathToCenter = getCircuitPath(playerPos.x, playerPos.y, contractNode.x, contractNode.y);
-    const pathBack = getCircuitPath(contractNode.x, contractNode.y, playerPos.x, playerPos.y);
-    const completePath = [...pathToCenter, ...pathBack];
+    // Use the player's own line path (player→center) for both directions
+    const playerLine = getCircuitPath(playerPos.x, playerPos.y, contractNode.x, contractNode.y);
+    const centerToPlayer = [...playerLine].reverse().map(segment => ({
+        start: segment.end,
+        end: segment.start
+    }));
+    
+    // Combine: player→center + center→player (reversed player line)
+    const completePath = [...playerLine, ...centerToPlayer];
+    
+    // Stagger multiple animations with a small delay to make them visible as separate pulses  
+    const delayOffset = animationCounter * 400; // 400ms delay between pulses
+    animationCounter++;
     
     const animation = new PulseAnimation(
         completePath,
         'self-cast',
-        Date.now(),
+        Date.now() + delayOffset,
         playerAddr,
         playerAddr
     );
