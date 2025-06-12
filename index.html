@@ -3290,7 +3290,7 @@
                     type = 'deposit';
             }
             
-            return { text, type, timestamp: parseInt(activity.blockTimestamp) };
+            return { text, type, timestamp: parseInt(activity.blockTimestamp), originalActivity: activity };
         }
 
         // Add real activity to feed
@@ -3304,6 +3304,19 @@
             const flashClass = `flash-${activityData.type === 'withdraw' ? 'deposit' : activityData.type}`;
             feedItem.classList.add(flashClass);
             setTimeout(() => feedItem.classList.remove(flashClass), 500);
+            
+            // Trigger map animations for quickhack activities
+            if (activityData.originalActivity && typeof startAttackAnimation === 'function' && typeof startSelfCastAnimation === 'function') {
+                const activity = activityData.originalActivity;
+                
+                if (activity.type === 'ATTACK' && activity.player && activity.target) {
+                    // Trigger attack animation: attacker -> center -> target
+                    startAttackAnimation(activity.player.id, activity.target.id);
+                } else if (activity.type === 'SELF_CAST' && activity.player) {
+                    // Trigger self-cast animation: player -> center -> player
+                    startSelfCastAnimation(activity.player.id);
+                }
+            }
             
             feed.insertBefore(feedItem, feed.firstChild);
             
