@@ -308,6 +308,25 @@ function startAttackAnimation(attackerAddr, targetAddr) {
     // Attacker to center uses attacker's own line path
     const attackerToCenter = getCircuitPath(attackerPos.x, attackerPos.y, contractNode.x, contractNode.y);
     
+    // Adjust first segment to start from node edge instead of center
+    if (attackerToCenter.length > 0) {
+        const firstSegment = attackerToCenter[0];
+        const nodeRadius = attackerPos.size / 2;
+        
+        // Calculate direction from node center to first path point
+        const dx = firstSegment.end.x - firstSegment.start.x;
+        const dy = firstSegment.end.y - firstSegment.start.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 0) {
+            // Move start point to node edge
+            const offsetX = (dx / distance) * nodeRadius;
+            const offsetY = (dy / distance) * nodeRadius;
+            firstSegment.start.x += offsetX;
+            firstSegment.start.y += offsetY;
+        }
+    }
+    
     // Combine them
     const completePath = [...attackerToCenter, ...centerToTarget];
     
@@ -336,6 +355,26 @@ function startSelfCastAnimation(playerAddr) {
     
     // Use the player's own line path (player→center) for both directions
     const playerLine = getCircuitPath(playerPos.x, playerPos.y, contractNode.x, contractNode.y);
+    
+    // Adjust first segment to start from node edge instead of center
+    if (playerLine.length > 0) {
+        const firstSegment = playerLine[0];
+        const nodeRadius = playerPos.size / 2;
+        
+        // Calculate direction from node center to first path point
+        const dx = firstSegment.end.x - firstSegment.start.x;
+        const dy = firstSegment.end.y - firstSegment.start.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 0) {
+            // Move start point to node edge
+            const offsetX = (dx / distance) * nodeRadius;
+            const offsetY = (dy / distance) * nodeRadius;
+            firstSegment.start.x += offsetX;
+            firstSegment.start.y += offsetY;
+        }
+    }
+    
     const centerToPlayer = [...playerLine].reverse().map(segment => ({
         start: segment.end,
         end: segment.start
