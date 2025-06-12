@@ -672,15 +672,12 @@
         async function loadMorePlayers() {
             if (!hasMorePlayers) return;
             
-            console.log('Loading more players, skip:', playersLoaded);
             const playerData = await fetchActivePlayers(PLAYERS_PER_PAGE, playersLoaded);
-            console.log('Additional player data:', playerData);
             
             if (playerData.length > 0) {
                 const newPlayers = await Promise.all(playerData.map(formatPlayer));
                 players = [...players, ...newPlayers];
                 playersLoaded += newPlayers.length;
-                console.log('Total players now:', players.length);
                 populatePlayerList();
                 updateHeaderStats();
                 
@@ -867,7 +864,6 @@
             AudioManager.play('click');
             currentQuickhack = quickhack;
             
-            console.log('selectQuickhack called with:', quickhack);
             
             // Remove 'selected' class from ALL quickhack buttons
             document.querySelectorAll('.quickhack-btn').forEach(btn => {
@@ -878,7 +874,6 @@
             document.querySelectorAll('.quickhack-btn').forEach(btn => {
                 if (btn.textContent === quickhack) {
                     btn.classList.add('selected');
-                    console.log('Selected button:', btn);
                 }
             });
             
@@ -928,7 +923,6 @@
             
             // Update estimated results based on selected quickhack if we have data
             if (connectedWalletAddress && attackerData && targetData) {
-                console.log('Auto-recalculating for new quickhack');
                 performCalculations();
             }
         }
@@ -1110,17 +1104,13 @@
         async function updatePlayerProfile() {
             if (!connectedWalletAddress) return;
             
-            console.log('Fetching profile for:', connectedWalletAddress);
             const playerData = await fetchPlayerProfile(connectedWalletAddress);
-            console.log('Player data received:', playerData);
             
             if (playerData) {
-                console.log('Using real data, balance:', playerData.currentBalance);
                 // Cache player data for withdrawal cooldown checks
                 window.cachedPlayerData = playerData;
                 await populateProfileWithRealData(playerData);
             } else {
-                console.log('No player data found, using defaults');
                 // Clear cached data if no player found
                 window.cachedPlayerData = null;
                 populateProfileWithNoData();
@@ -2113,12 +2103,10 @@
         
         // Function to load Base Sepolia gas price
         async function loadGasPrice() {
-            console.log('Loading gas price...');
             
             // Try MetaMask first if available and connected to Base Sepolia
             if (window.ethereum && connectedWalletAddress) {
                 try {
-                    console.log('Trying MetaMask for gas price...');
                     const web3 = new Web3(window.ethereum);
                     const currentChainId = await web3.eth.getChainId();
                     
@@ -3470,9 +3458,7 @@
 
         // Check for new activities
         async function checkForNewActivities() {
-            console.log('Checking for new activities...');
             const newActivities = await fetchActivities(lastActivityTimestamp);
-            console.log(`Found ${newActivities.length} new activities`);
             if (newActivities.length > 0) {
                 newActivities.reverse().forEach(activity => {
                     const formatted = formatActivity(activity);

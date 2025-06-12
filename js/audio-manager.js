@@ -11,7 +11,6 @@ const AudioManager = {
     init() {
         if (this.initialized) return;
         
-        console.log('Initializing QuickHacks Audio Manager...');
         
         // Define all sound files
         this.sounds = {
@@ -39,14 +38,9 @@ const AudioManager = {
                 console.warn(`Failed to load sound: ${name}`, e);
             });
             
-            // Log successful loads
-            audio.addEventListener('canplaythrough', () => {
-                console.log(`Sound loaded: ${name}`);
-            });
         });
         
         this.initialized = true;
-        console.log('Audio Manager initialized with', Object.keys(this.sounds).length, 'sounds');
     },
     
     // Play a specific sound
@@ -89,7 +83,6 @@ const AudioManager = {
             testSound.volume = 0;
             testSound.play().then(() => {
                 testSound.volume = this.volume;
-                console.log('Audio unlocked by user interaction');
             }).catch(() => {});
         }
     },
@@ -97,7 +90,6 @@ const AudioManager = {
     // Toggle audio on/off
     toggle() {
         this.enabled = !this.enabled;
-        console.log('Audio', this.enabled ? 'enabled' : 'disabled');
         return this.enabled;
     },
     
@@ -107,7 +99,6 @@ const AudioManager = {
         Object.values(this.sounds).forEach(audio => {
             audio.volume = this.volume;
         });
-        console.log('Audio volume set to', this.volume);
     },
     
     // Get current settings

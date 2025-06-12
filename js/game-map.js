@@ -104,6 +104,12 @@ async function refreshGameMap(silent = false) {
     if (!silent && typeof AudioManager !== 'undefined') {
         AudioManager.play('refresh');
     }
+    
+    // CRITICAL FIX: Clear all active animations when refreshing map
+    // This prevents coordinate mismatch between old animation paths and new player positions
+    activeAnimations = [];
+    animationCounter = 0;
+    
     mapPlayerData = await fetchMapPlayers();
     if (mapP5Instance && mapP5Instance.updateMapPlayers) {
         mapP5Instance.updateMapPlayers();
@@ -183,8 +189,8 @@ function updateTargetInputStyling(address) {
  * PulseAnimation class to manage individual traveling pulses
  */
 class PulseAnimation {
-    constructor(pathSegments, type, startTime, attackerAddr = null, targetAddr = null) {
-        this.pathSegments = pathSegments; // Store exact path at creation time
+    constructor(type, startTime, attackerAddr = null, targetAddr = null) {
+        // DON'T store pathSegments - calculate them dynamically each time
         this.progress = 0; // 0-1 animation progress
         this.type = type; // 'attack' or 'self-cast'
         this.startTime = startTime;
@@ -192,12 +198,11 @@ class PulseAnimation {
         this.attackerAddr = attackerAddr;
         this.targetAddr = targetAddr;
         this.isComplete = false;
-        this.nodeOffset = 0.02; // Start slightly ahead to begin from node edge
     }
     
     update(currentTime) {
         const elapsed = currentTime - this.startTime;
-        this.progress = Math.min(elapsed / this.duration, 1);
+        this.progress = Math.max(0, Math.min(elapsed / this.duration, 1));
         
         if (this.progress >= 1) {
             this.isComplete = true;
@@ -205,10 +210,47 @@ class PulseAnimation {
     }
     
     getCurrentPosition() {
-        // Use the stored path from creation time - no dynamic calculation
-        // Add small offset to start from node edge instead of center
-        const adjustedProgress = Math.min(this.progress + this.nodeOffset, 1);
-        return getPulsePosition(this.pathSegments, adjustedProgress);
+        // CRITICAL FIX: Calculate path with CURRENT player positions each time
+        const pathSegments = this.calculateCurrentPath();
+        if (!pathSegments) return null;
+        
+        return getPulsePosition(pathSegments, this.progress);
+    }
+    
+    calculateCurrentPath() {
+        // Get CURRENT positions from the map
+        const attackerPos = findPlayerPosition(this.attackerAddr);
+        const targetPos = this.type === 'attack' ? findPlayerPosition(this.targetAddr) : attackerPos;
+        
+        if (!attackerPos || !targetPos || !contractNode) return null;
+        
+        
+        if (this.type === 'attack') {
+            // Attack: attacker → center → target
+            const targetLine = getCircuitPath(targetPos.x, targetPos.y, contractNode.x, contractNode.y);
+            const centerToTarget = [...targetLine].reverse().map(segment => ({
+                start: segment.end,
+                end: segment.start
+            }));
+            
+            const attackerToCenter = getCircuitPath(attackerPos.x, attackerPos.y, contractNode.x, contractNode.y);
+            
+            // DON'T modify the path segments - keep original path for proper calculation
+            
+            return [...attackerToCenter, ...centerToTarget];
+        } else {
+            // Self-cast: player → center → player
+            const playerLine = getCircuitPath(attackerPos.x, attackerPos.y, contractNode.x, contractNode.y);
+            
+            // DON'T modify the path segments - keep original path for proper calculation
+            
+            const centerToPlayer = [...playerLine].reverse().map(segment => ({
+                start: segment.end,
+                end: segment.start
+            }));
+            
+            return [...playerLine, ...centerToPlayer];
+        }
     }
 }
 
@@ -286,41 +328,24 @@ function getCircuitPath(x1, y1, x2, y2) {
  */
 function findPlayerPosition(address) {
     if (!address) return null;
-    return mapPlayers.find(p => 
+    
+    const found = mapPlayers.find(p => 
         p.address.toLowerCase() === address.toLowerCase()
     );
+    
+    
+    return found;
 }
 
 /**
  * Start attack animation from attacker to target via center
  */
 function startAttackAnimation(attackerAddr, targetAddr) {
-    const attackerPos = findPlayerPosition(attackerAddr);
-    const targetPos = findPlayerPosition(targetAddr);
-    
-    if (!attackerPos || !targetPos || !contractNode) return;
-    
-    // The key insight: the target's line is drawn from target→center
-    // So for center→target, we need to reverse that exact same path
-    const targetLine = getCircuitPath(targetPos.x, targetPos.y, contractNode.x, contractNode.y);
-    const centerToTarget = [...targetLine].reverse().map(segment => ({
-        start: segment.end,
-        end: segment.start
-    }));
-    
-    // Attacker to center uses attacker's own line path
-    const attackerToCenter = getCircuitPath(attackerPos.x, attackerPos.y, contractNode.x, contractNode.y);
-    
-    
-    // Combine them
-    const completePath = [...attackerToCenter, ...centerToTarget];
-    
     // Stagger multiple animations with a small delay to make them visible as separate pulses
     const delayOffset = animationCounter * 400; // 400ms delay between pulses
     animationCounter++;
     
     const animation = new PulseAnimation(
-        completePath,
         'attack',
         Date.now() + delayOffset,
         attackerAddr,
@@ -334,28 +359,11 @@ function startAttackAnimation(attackerAddr, targetAddr) {
  * Start self-cast animation from player to center and back
  */
 function startSelfCastAnimation(playerAddr) {
-    const playerPos = findPlayerPosition(playerAddr);
-    
-    if (!playerPos || !contractNode) return;
-    
-    // Use the player's own line path (player→center) for both directions
-    const playerLine = getCircuitPath(playerPos.x, playerPos.y, contractNode.x, contractNode.y);
-    
-    
-    const centerToPlayer = [...playerLine].reverse().map(segment => ({
-        start: segment.end,
-        end: segment.start
-    }));
-    
-    // Combine: player→center + center→player (reversed player line)
-    const completePath = [...playerLine, ...centerToPlayer];
-    
     // Stagger multiple animations with a small delay to make them visible as separate pulses  
     const delayOffset = animationCounter * 400; // 400ms delay between pulses
     animationCounter++;
     
     const animation = new PulseAnimation(
-        completePath,
         'self-cast',
         Date.now() + delayOffset,
         playerAddr,
@@ -378,6 +386,7 @@ function drawActivePulses(p) {
         if (!animation.isComplete) {
             const position = animation.getCurrentPosition();
             if (position) {
+                
                 // Draw pulse as simple thick line segment - exactly like normal lines but thicker
                 p.stroke('#d9d8eb');
                 p.strokeWeight(3); // Just a thicker version of normal line
@@ -457,6 +466,7 @@ async function initializeGameMap() {
             
             // Draw player nodes
             mapPlayers.forEach((player, index) => {
+                
                 // Check if player is within canvas bounds
                 if (player.x >= 0 && player.x <= p.width && player.y >= 0 && player.y <= p.height) {
                     // Special styling for boss and team addresses
@@ -467,6 +477,7 @@ async function initializeGameMap() {
                     const isConnectedPlayer = typeof connectedWalletAddress !== 'undefined' && 
                                             connectedWalletAddress && 
                                             player.address.toLowerCase() === connectedWalletAddress.toLowerCase();
+                    
                     
                     // Check if this is the targeted player
                     const isTargetedPlayer = targetedAddress && 
