@@ -1464,7 +1464,7 @@
                     if (connectedWalletAddress) {
                         updatePlayerProfile();
                     }
-                }, 10000);
+                }, 15000);
                 
             } catch (error) {
                 console.error('Deposit failed:', error);
@@ -1515,7 +1515,7 @@
                     if (connectedWalletAddress) {
                         updatePlayerProfile();
                     }
-                }, 10000);
+                }, 15000);
                 
             } catch (error) {
                 console.error('Withdrawal failed:', error);
@@ -3588,8 +3588,8 @@
                 setTimeout(() => loadCurrentBlock(), 4000); // Stagger by 4 seconds  
                 setTimeout(() => loadGasPrice(), 6000); // Stagger by 6 seconds
                 setTimeout(() => refreshGameStateAndCalculations(), 8000); // Load game state
-                setInterval(checkForNewActivities, 40000); // Check every 40 seconds
-                setInterval(smartUpdatePlayerList, 90000); // Smart update players every 90 seconds
+                setInterval(checkForNewActivities, 25000); // Check every 25 seconds
+                setInterval(smartUpdatePlayerList, 60000); // Smart update players every 60 seconds
                 setInterval(loadBossBalance, 90000); // Update boss balance every 90 seconds
                 setInterval(loadCurrentBlock, 60000); // Update block number every minute
                 setInterval(loadGasPrice, 600000); // Update gas price every 10 minutes
