@@ -2207,28 +2207,49 @@
             AudioManager.play('click');
             
             // Clear any previous error messages before processing new target
-            // Clear estimated results section errors
+            // Clear estimated results section errors - comprehensive cleanup
             const estimatedDamageElement = document.getElementById('estimatedDamage');
             let estimatedResultsItem = null;
             
             if (estimatedDamageElement) {
                 estimatedResultsItem = estimatedDamageElement.closest('.detail-item');
             } else {
-                // If estimatedDamage element doesn't exist, find the detail-item that contains error messages
+                // If estimatedDamage element doesn't exist, find the detail-item that contains ANY error messages
                 const detailItems = document.querySelectorAll('.detail-item');
                 for (const item of detailItems) {
-                    if (item.innerHTML.includes('[cannot use self-cast on enemy]') ||
-                        item.innerHTML.includes('[team treasury cannot be attacked]')) {
+                    const itemText = item.innerHTML;
+                    if (itemText.includes('[cannot use self-cast on enemy]') ||
+                        itemText.includes('[team treasury cannot be attacked]') ||
+                        itemText.includes('target has too much ram') ||
+                        itemText.includes('target doesn') ||
+                        itemText.includes('victim effect slots maxed out') ||
+                        itemText.includes('no available effect slots') ||
+                        itemText.includes('on/off still active') ||
+                        itemText.includes('target has bersek active') ||
+                        itemText.includes('target has icewall active') ||
+                        itemText.includes('hack yourself')) {
                         estimatedResultsItem = item;
                         break;
                     }
                 }
             }
             
-            if (estimatedResultsItem && (estimatedResultsItem.innerHTML.includes('[cannot use self-cast on enemy]') ||
-                estimatedResultsItem.innerHTML.includes('[team treasury cannot be attacked]'))) {
-                // Restore the normal estimated results structure
-                estimatedResultsItem.innerHTML = 'damages <span class="ram-value" id="estimatedDamage">[connect]</span> | costs <span class="ram-value" id="estimatedCost">[connect]</span> | slots used <span id="slotsUsedValue">[1]</span>';
+            if (estimatedResultsItem) {
+                const itemText = estimatedResultsItem.innerHTML;
+                // Check if this item contains any error message (not just the old ones)
+                if (itemText.includes('[cannot use self-cast on enemy]') ||
+                    itemText.includes('[team treasury cannot be attacked]') ||
+                    itemText.includes('target has too much ram') ||
+                    itemText.includes('target doesn') ||
+                    itemText.includes('victim effect slots maxed out') ||
+                    itemText.includes('no available effect slots') ||
+                    itemText.includes('on/off still active') ||
+                    itemText.includes('target has bersek active') ||
+                    itemText.includes('target has icewall active') ||
+                    itemText.includes('hack yourself')) {
+                    // Restore the normal estimated results structure
+                    estimatedResultsItem.innerHTML = 'damages <span class="ram-value" id="estimatedDamage">[connect]</span> | costs <span class="ram-value" id="estimatedCost">[connect]</span> | slots used <span id="slotsUsedValue">[1]</span>';
+                }
             }
             
             // Clear result section errors
@@ -2330,11 +2351,52 @@
                 // Display the player data
                 await displayTargetData(player);
                 
-                // Also calculate estimated results if wallet is connected
+                // Perform comprehensive error checking if wallet is connected
                 if (connectedWalletAddress) {
                     // Set the target data for calculations
                     targetData = player;
-                    // Get attacker data and calculate
+                    
+                    // Get attacker data for error checking
+                    try {
+                        const attackerResponse = await fetch(SUBGRAPH_URL, {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            mode: 'cors',
+                            body: JSON.stringify({
+                                query: TARGET_PLAYER_QUERY,
+                                variables: { playerAddress: connectedWalletAddress.toLowerCase() }
+                            })
+                        });
+                        
+                        const attackerData_raw = await attackerResponse.json();
+                        
+                        if (!attackerData_raw.errors && attackerData_raw.data.player) {
+                            const attackerData = attackerData_raw.data.player;
+                            
+                            // Perform comprehensive error checking
+                            const errorCheck = await performComprehensiveErrorChecking(attackerData, player);
+                            
+                            if (!errorCheck.valid) {
+                                // Display error message in estimated results section
+                                const estimatedDamageElement = document.getElementById('estimatedDamage');
+                                if (estimatedDamageElement) {
+                                    const parentDetailItem = estimatedDamageElement.closest('.detail-item');
+                                    if (parentDetailItem) {
+                                        parentDetailItem.innerHTML = errorCheck.message;
+                                    }
+                                }
+                                return; // Stop processing if error found
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error during comprehensive error checking:', error);
+                        // Continue with normal flow if error checking fails
+                    }
+                    
+                    // Get attacker data and calculate (only if no errors found)
                     refreshAttackerDataAndCalculate();
                 }
                 
@@ -2344,6 +2406,212 @@
             }
         }
         
+        // Helper function to get quickhack slot requirements
+        function getQuickhackSlotRequirement(quickhackType) {
+            const slotRequirements = {
+                1: 1, // SHORT CIRCUIT
+                2: 1, // OVERHEAT
+                3: 0, // LAG (no slots)
+                4: 0, // TROLL (no slots)
+                5: 1, // BERSERK
+                6: 1, // OILBATH
+                7: 1, // ON/OFF
+                8: 3, // DOWNSTREAM (uses 3 slots)
+                9: 1  // ICEWALL
+            };
+            return slotRequirements[quickhackType] || 0;
+        }
+
+        // Helper function to check 10% balance requirement rule
+        function checkBalanceRequirement(attackerBalance, targetBalance) {
+            // Small vs Big: attacker needs minimum 10% of target's balance
+            const minRequiredForTarget = Math.floor(targetBalance * 0.1);
+            if (attackerBalance < minRequiredForTarget) {
+                return {
+                    valid: false,
+                    message: '[target has too much ram, min. 10% of balance required]'
+                };
+            }
+            
+            // Big vs Small: target needs minimum 10% of attacker's balance
+            const minRequiredForAttacker = Math.floor(attackerBalance * 0.1);
+            if (targetBalance < minRequiredForAttacker) {
+                return {
+                    valid: false,
+                    message: '[target doesn\'t have enough ram, min. 10% of balance required]'
+                };
+            }
+            
+            return { valid: true };
+        }
+
+        // Helper function to check effect slot availability
+        function checkEffectSlots(player, quickhackType, isSelfCast, currentBlockNumber) {
+            // Filter out expired effects using current block number
+            const activeEffects = player.activeEffects ? 
+                player.activeEffects.filter(effect => parseInt(effect.endBlock) > currentBlockNumber) : [];
+            const activeEffectsCount = activeEffects.length;
+            const slotsRequired = getQuickhackSlotRequirement(quickhackType);
+            
+            if (slotsRequired === 0) {
+                return { valid: true }; // LAG and TROLL don't require slots
+            }
+            
+            if (isSelfCast) {
+                // Self-cast: check if player has enough available slots
+                const availableSlots = 9 - activeEffectsCount;
+                if (availableSlots < slotsRequired) {
+                    return {
+                        valid: false,
+                        message: '[no available effect slots for this quickhack. wait or reset your slots with on/off]'
+                    };
+                }
+            } else {
+                // Attack: check if victim has space for the effect (only for slot-using attacks)
+                if (activeEffectsCount >= 9) {
+                    return {
+                        valid: false,
+                        message: '[victim effect slots maxed out (9/9), wait for effects to clear or use LAG/troll]'
+                    };
+                }
+            }
+            
+            return { valid: true };
+        }
+
+        // Helper function to check on/off protection
+        function checkOnOffProtection(player, currentBlockNumber) {
+            if (!player.activeEffects) return { valid: true };
+            
+            // Filter out expired effects using current block number
+            const activeEffects = player.activeEffects.filter(effect => parseInt(effect.endBlock) > currentBlockNumber);
+            
+            const hasOnOff = activeEffects.some(effect => 
+                parseInt(effect.quickhackType) === 7 // ON/OFF type
+            );
+            
+            if (hasOnOff) {
+                return {
+                    valid: false,
+                    message: '[on/off still active, wait]'
+                };
+            }
+            
+            return { valid: true };
+        }
+
+        // Helper function to check immunity effects
+        function checkImmunityEffects(player, quickhackType, currentBlockNumber) {
+            if (!player.activeEffects) return { valid: true };
+            
+            // Filter out expired effects using current block number
+            const activeEffects = player.activeEffects.filter(effect => parseInt(effect.endBlock) > currentBlockNumber);
+            
+            // Check for berserk immunity against overheat
+            if (quickhackType === 2) { // OVERHEAT
+                const hasBerserk = activeEffects.some(effect => 
+                    parseInt(effect.quickhackType) === 5 // BERSERK
+                );
+                if (hasBerserk) {
+                    return {
+                        valid: false,
+                        message: '[target has bersek active, overheat immunity, wait or use another quickhack]'
+                    };
+                }
+            }
+            
+            // Check for icewall immunity against lag
+            if (quickhackType === 3) { // LAG
+                const hasIcewall = activeEffects.some(effect => 
+                    parseInt(effect.quickhackType) === 9 // ICEWALL
+                );
+                if (hasIcewall) {
+                    return {
+                        valid: false,
+                        message: '[target has icewall active, lag immunity, wait or use another quickhack]'
+                    };
+                }
+            }
+            
+            return { valid: true };
+        }
+
+        // Comprehensive error checking function for quickhack execution
+        async function performComprehensiveErrorChecking(attackerData, targetData) {
+            if (!connectedWalletAddress) {
+                return { valid: true }; // No error checking if not connected
+            }
+            
+            // Get current block number for effect filtering
+            let currentBlockNumber;
+            try {
+                if (window.ethereum) {
+                    const web3 = new Web3(window.ethereum);
+                    currentBlockNumber = await web3.eth.getBlockNumber();
+                } else {
+                    return { valid: true }; // Can't get block number, skip validation
+                }
+            } catch (error) {
+                console.error('Failed to get current block number for error checking:', error);
+                return { valid: true }; // Skip validation if we can't get block number
+            }
+            
+            // Get selected quickhack type
+            const selectedQuickhackType = getSelectedQuickhackType();
+            if (!selectedQuickhackType) {
+                return { valid: true }; // No quickhack selected, let normal flow handle this
+            }
+            
+            const targetAddress = document.getElementById('targetAddressInput').value.trim().toLowerCase();
+            const isTargetingSelf = connectedWalletAddress.toLowerCase() === targetAddress;
+            const params = QUICKHACK_PARAMS[selectedQuickhackType];
+            
+            if (!params) {
+                return { valid: true }; // Invalid quickhack type, let normal flow handle this
+            }
+            
+            // Skip error checking for invalid quickhack/target combinations (handled elsewhere)
+            if (isTargetingSelf && !params.selfCastOnly) {
+                return { valid: true }; // Attack on self - handled by existing logic
+            }
+            if (!isTargetingSelf && params.selfCastOnly) {
+                return { valid: true }; // Self-cast on enemy - handled by existing logic
+            }
+            
+            const attackerBalance = parseInt(attackerData.currentBalance);
+            const targetBalance = parseInt(targetData.currentBalance);
+            
+            // 1. Check 10% balance requirement (only for attacks, not self-casts)
+            if (!isTargetingSelf) {
+                const balanceCheck = checkBalanceRequirement(attackerBalance, targetBalance);
+                if (!balanceCheck.valid) {
+                    return balanceCheck;
+                }
+            }
+            
+            // 2. Check on/off protection on target (blocks all quickhacks)
+            const onOffCheck = checkOnOffProtection(targetData, currentBlockNumber);
+            if (!onOffCheck.valid) {
+                return onOffCheck;
+            }
+            
+            // 3. Check immunity effects (only for attacks)
+            if (!isTargetingSelf) {
+                const immunityCheck = checkImmunityEffects(targetData, selectedQuickhackType, currentBlockNumber);
+                if (!immunityCheck.valid) {
+                    return immunityCheck;
+                }
+            }
+            
+            // 4. Check effect slot availability
+            const slotCheck = checkEffectSlots(isTargetingSelf ? attackerData : targetData, selectedQuickhackType, isTargetingSelf, currentBlockNumber);
+            if (!slotCheck.valid) {
+                return slotCheck;
+            }
+            
+            return { valid: true };
+        }
+
         // Function to display target player data
         async function displayTargetData(player) {
             // Cheating death bonuses are now included directly in subgraph attackBonus/defenseBonus data
